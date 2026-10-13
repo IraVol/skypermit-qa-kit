@@ -1,7 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repositor
 ## What this is
 
 `skypermit-qa-kit` is the QA/testing companion for **SkyPermit**, the app in
