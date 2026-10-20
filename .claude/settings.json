@@ -1,5 +1,12 @@
 {
   "permissions": {
+    "defaultMode": "plan",
+    "plan": [
+      "Read",
+      "Glob",
+      "Grep",
+      "LS"
+    ],
     "allow": [
       "Edit",
       "Write",
@@ -21,6 +28,15 @@
       "Bash(jest *)",
       "Bash(docker *)",
       "Bash(make *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git reset --hard *)",
+      "Bash(npm publish *)",
+      "Bash(npm install *)",
+      "Bash(docker rm *)",
+      "Bash(docker system prune *)",
+      "Edit(../skypermit/**)"
     ],
     "deny": [
       "Read(.git/*)",
@@ -59,6 +75,9 @@
     "additionalDirectories": [
       "../skypermit"
     ]
+  },
+  "env": {
+    "CLAUDE_CODE_EFFORT_LEVEL": "medium"
   },
   "includeCoAuthoredBy": false
 }
