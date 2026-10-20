@@ -1,0 +1,10 @@
+ended_at,project,session_name,session_id,reason,model,requests,input,output,cache_write,cache_read,cost_usd
+2026-10-20T16:03:10,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit-qa-kit,,ea3947a1-e7f2-4ce6-9316-431938f63a43,manual-test,claude-opus-5-5,7,14,2305,18974,287233,0.2554
+2026-10-20T17:17:48,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit-qa-kit,new-branch ⑂,43523b14-2c4a-4e6c-88ba-349863630f97,clear,claude-opus-5-5,5,10,2154,37804,193673,0.3843
+2026-10-20T17:22:13,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit-qa-kit,new-branch,06cd94eb-edf9-4c50-9c40-60932025450e,other,claude-opus-5-5,1,2,120,15899,26221,0.1348
+2026-10-20T17:31:37,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit-qa-kit,Аудит permissions Claude Code,208f3c3b-16b1-486d-a050-ce9b2e181fe2,other,claude-opus-5-5,3,8,377,13726,110703,0.1395
+2026-10-20T17:31:37,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit-qa-kit,Аудит permissions Claude Code,208f3c3b-16b1-486d-a050-ce9b2e181fe2,other,claude-sonnet-5-5,1,2,267,16228,0,0.0432
+2026-10-20T17:31:57,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit-qa-kit,,e8b4e6a1-4955-46ce-bb58-44cbd73193b2,logout,claude-opus-5-5,1,2,421,13089,28076,0.1188
+2026-10-20T19:59:32,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit,Existing test cases,1128f545-23ea-47d3-b98d-5b1fd3ab010d,prompt_input_exit,claude-opus-5-5,11,22,6053,35517,552196,0.5157
+2026-10-20T20:37:31,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit-qa-kit,Аудит permissions у Claude Code,7ee5f04a-99cd-4d22-ba5f-b1e125434552,other,claude-opus-5-5,5,12,2212,18704,194871,0.2329
+2026-10-20T20:37:31,/Users/irynavolnykh/🦄 Certified Unicorns - workshop/skypermit-with-qa-workwlow/skypermit-qa-kit,Аудит permissions у Claude Code,7ee5f04a-99cd-4d22-ba5f-b1e125434552,other,claude-sonnet-5-5,3,6,10120,23397,36180,0.1669

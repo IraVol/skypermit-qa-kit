@@ -1,4 +1,7 @@
 {
+  "model": "opus",
+  "effortLevel": "high",
+  "autoMemoryEnabled": true,
   "permissions": {
     "defaultMode": "plan",
     "plan": [
@@ -76,8 +79,18 @@
       "../skypermit"
     ]
   },
-  "env": {
-    "CLAUDE_CODE_EFFORT_LEVEL": "medium"
-  },
-  "includeCoAuthoredBy": false
+  "includeCoAuthoredBy": false,
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-cost.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
 }
