@@ -1,6 +1,6 @@
 ---
 name: test-case-creator
-description: Writes ONE atomic SkyPermit E2E test case for ONE business rule (rule_reference + gate) into test-cases/, in the kit's template format. Use when a specific uncovered rule needs a case — called per rule by /cover-gaps, or directly with a rule block from scripts/uncovered-rules.mjs. Not for reviewing existing cases (case-reviewer) or for open-ended test design (e2e-test-design).
+description: Writes ONE atomic SkyPermit E2E test case for ONE business rule (rule_reference + gate) into test-cases/, in the kit's template format. Use when a specific uncovered rule needs a case — called per rule by /cover-gaps, or directly with a rule block from scripts/uncovered-rules.mjs. Not for reviewing existing cases or for open-ended test design.
 argument-hint: "<rule block: rule_reference, gate, condition, case_id, file, rule>"
 model: sonnet
 context: fork
@@ -46,8 +46,8 @@ One violated condition → one expected outcome with one `rule_reference`.
 
 ## Inputs you may read
 
-- `.claude/skills/e2e-test-design/templates.md` — the field list and order.
-  Follow it exactly.
+- `templates/test-case.md` in this skill's directory — the field list and
+  order. Follow it exactly.
 - `examples/gate-failure.md` and `examples/registration-refusal.md` in this
   skill's directory — the *shape* of a good case. They are templates with
   placeholders, not data to copy.

@@ -7,10 +7,10 @@
 // Step 1 of the /cover-gaps skill — injected into the skill's prompt so the
 // model never has to read the business-rules doc itself.
 //
-// Differs from rule-coverage.mjs in one important way: a rule is keyed by
-// (gate, rule_reference), not by citation alone. ZC-2026.1 §2 is shared by the
-// AIRCRAFT weight-band rule and the ZONE altitude rule, so a case asserting
-// that citation only covers the rule whose gate it also names.
+// A rule is keyed by (gate, rule_reference), not by citation alone.
+// ZC-2026.1 §2 is shared by the AIRCRAFT weight-band rule and the ZONE
+// altitude rule, so a case asserting that citation only covers the rule whose
+// gate it also names.
 //
 // Usage:
 //   node scripts/uncovered-rules.mjs                    # every gap, every gate
@@ -32,7 +32,7 @@ const DOCS = resolve(REPO, "../skypermit/docs");
 const RULES_DOC = join(DOCS, "06-business-rules.md");
 const CLARIFICATIONS_DOC = join(DOCS, "07-clarifications.md");
 const CASES_DIR = join(REPO, "test-cases");
-// Worked examples also consume IDs — "never reused" per templates.md.
+// Worked examples also consume IDs — "never reused" per the test-case template.
 const ID_SOURCES = [CASES_DIR, join(REPO, ".claude/skills")];
 
 const GATES = ["PILOT", "AIRCRAFT", "ZONE", "TIME_WINDOW", "REGISTRATION"];

@@ -2,8 +2,7 @@
 
 Use this structure for every E2E test case written for this kit, whether
 it ends up as a design doc, a ticket, or a comment block above the actual
-test code once a framework is chosen. It's a formalization of "Structuring
-a test case" in `SKILL.md` — same fields, fixed order, IDs for
+test code once a framework is chosen — same fields, fixed order, IDs for
 traceability.
 
 ## Fields
@@ -105,7 +104,6 @@ that silently "succeeds" here would be masking a real `409` from the
 operator.
 ```
 
-See `examples.md` for six more cases in this exact format, covering the
-legal-transition baseline, a gate-failure case via `validate`, the
-no-pre-filter contract, a cross-role flow, and the cancellation deadline
-boundary.
+See `../examples/gate-failure.md` and `../examples/registration-refusal.md`
+for the shape of a gate-failure case and a registration-refusal case in
+this exact format.

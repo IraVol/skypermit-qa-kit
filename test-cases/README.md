@@ -7,17 +7,13 @@ test-cases/<module>/<file>.md
 ```
 
 Each file holds one or more cases in the format defined by
-`.claude/skills/e2e-test-design/templates.md` (ID, Title, Doc ref,
-Role(s), Preconditions, Steps, Expected result, Rationale). This directory
-is the live, growing registry of cases to actually implement and track —
-not teaching material. Worked examples that teach the format live in
-`.claude/skills/e2e-test-design/examples.md` instead; don't move those
+`.claude/skills/test-case-creator/templates/test-case.md` (ID, Title, Doc
+ref, Role(s), Preconditions, Steps, Expected result, Rationale). This
+directory is the live, growing registry of cases to actually implement and
+track — not teaching material. Worked examples that teach the format live
+in `.claude/skills/test-case-creator/examples/` instead; don't move those
 here, and don't treat this directory's cases as duplicates of them even if
 a case here covers the same scenario.
-
-`/check-test-coverage <test-case-id>` reads case definitions from here
-(searching every module) to check whether an automated test implementing
-that ID exists yet in this repo.
 
 ## Modules
 
@@ -31,7 +27,7 @@ Add a new module directory as new areas of the app get covered (e.g. a
 
 ## ID numbering
 
-IDs are `E2E-<portal>-<seq>` per `templates.md` (`OP` operator, `REV`
+IDs are `E2E-<portal>-<seq>` per `test-case.md` (`OP` operator, `REV`
 reviewer, `X` cross-role). Sequence numbers are global across this
 directory, not per-module — check existing files across all modules
 before assigning the next number in a prefix, so two modules never
