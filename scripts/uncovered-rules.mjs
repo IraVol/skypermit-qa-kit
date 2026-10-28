@@ -215,7 +215,7 @@ const field = (part, name) =>
 const cases = [];
 for (const file of walk(CASES_DIR).filter((f) => !/readme\.md$/i.test(f))) {
   for (const part of readFileSync(file, "utf8").split(/^###\s+/m).slice(1)) {
-    const id = part.match(/^(E2E-[A-Z]+-\d+)\s*:/)?.[1];
+    const id = part.match(/^(E2E-[A-Z]+-\d+(?:\.\d+)?)\s*:/)?.[1];
     if (!id) continue;
     const expected = field(part, "Expected result");
     cases.push({

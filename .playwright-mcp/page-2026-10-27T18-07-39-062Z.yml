@@ -1,0 +1,81 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Skypermit" [ref=e5] [cursor=pointer]:
+          - /url: /
+        - group "Portal" [ref=e6]:
+          - link "Operator" [ref=e7] [cursor=pointer]:
+            - /url: /operator/pilots
+          - link "Reviewer" [ref=e8] [cursor=pointer]:
+            - /url: /reviewer
+        - navigation "Sections" [ref=e19]:
+          - link "Pilots" [ref=e20] [cursor=pointer]:
+            - /url: /operator/pilots
+          - link "Aircraft" [ref=e21] [cursor=pointer]:
+            - /url: /operator/aircraft
+          - link "My Requests" [ref=e22] [cursor=pointer]:
+            - /url: /operator/requests
+          - link "New Request" [ref=e23] [cursor=pointer]:
+            - /url: /operator/requests/new
+          - generic [ref=e24]: Iryna
+          - button "Log out" [ref=e25] [cursor=pointer]
+    - main [ref=e10]:
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - generic [ref=e28]: Operator / Registry
+          - heading "Pilot registry" [level=1] [ref=e29]
+          - paragraph [ref=e30]: A pilot must hold a current certificate and medical to clear the PILOT gate.
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic [ref=e33]: Registered pilots
+            - table [ref=e35]:
+              - rowgroup [ref=e36]:
+                - row [ref=e37]:
+                  - columnheader "Full name" [ref=e38]
+                  - columnheader "National ID" [ref=e39]
+                  - columnheader "Rating" [ref=e40]
+                  - columnheader "Certified on" [ref=e41]
+                  - columnheader "Currency" [ref=e42]
+              - rowgroup [ref=e43]:
+                - row [ref=e44]:
+                  - cell "QA SKY-3 Advanced Pilot" [ref=e45]
+                  - cell "QA-SKY3-PILOT-01" [ref=e46]
+                  - cell "R_ADVANCED" [ref=e47]
+                  - cell "2026-06-01" [ref=e48]
+                  - cell "CURRENT" [ref=e49]
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e52]: Add pilot
+              - heading "Register a pilot" [level=2] [ref=e53]
+            - generic [ref=e54]:
+              - generic [ref=e55]:
+                - generic [ref=e56]:
+                  - generic [ref=e57]: Full name
+                  - generic [ref=e58]: required
+                - textbox "Full name" [ref=e59]
+              - generic [ref=e60]:
+                - generic [ref=e61]:
+                  - generic [ref=e62]: National ID
+                  - generic [ref=e63]: required
+                - textbox "National ID" [ref=e64]
+              - generic [ref=e65]:
+                - generic [ref=e66]: Rating
+                - combobox "Rating" [ref=e69]:
+                  - option "R_BASIC" [selected]
+                  - option "R_ADVANCED"
+                  - option "R_BVLOS"
+              - generic [ref=e70]:
+                - generic [ref=e71]:
+                  - generic [ref=e72]: Certified on
+                  - generic [ref=e73]: required
+                - textbox "Certified on" [ref=e74]
+              - button "Register pilot" [ref=e75] [cursor=pointer]
+    - contentinfo [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]: Skypermit / internal
+        - generic [ref=e15]: Rules revision 2026.08
+        - link "API reference" [ref=e16] [cursor=pointer]:
+          - /url: /api-docs
+        - generic [ref=e17]: Operator portal
+  - alert [ref=e18]

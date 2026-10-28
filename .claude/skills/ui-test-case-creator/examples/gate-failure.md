@@ -9,8 +9,10 @@ wording about the specific property being broken — that comes from the rule.
 
 ### <case_id>: <GATE> fails when <the one violated condition, in plain words>
 
-**Doc ref:** `skypermit/docs/06-business-rules.md` — `<rule_reference>`
+**Doc ref:** [06 — Business Rules](https://iv-skypermit.atlassian.net/wiki/spaces/SD/pages/262146) — `<rule_reference>`
 (§1.<n> `<GATE>` table; §6 `rule_reference` table)
+
+**Technique:** BV — <limit> + 1 <unit>
 
 **Role(s):** Operator
 

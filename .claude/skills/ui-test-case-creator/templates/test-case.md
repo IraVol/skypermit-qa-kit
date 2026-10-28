@@ -10,19 +10,22 @@ traceability.
 - **ID** — `E2E-<portal>-<seq>`, e.g. `E2E-OP-001` (operator portal),
   `E2E-REV-001` (reviewer queue), `E2E-X-001` (cross-role). Sequential per
   prefix, never reused even if a case is later deleted.
+  Cases generated together for one rule share the base ID with a
+  sub-number: `E2E-OP-002.1`, `E2E-OP-002.2`, …
 - **Title** — one line, states the scenario, not the mechanics (e.g.
   "Illegal re-submit of an UNDER_REVIEW request", not "click submit
   button twice").
-- **Doc ref** — the specific source doc(s) and section(s) this case is
+- **Doc ref** — the specific Confluence page(s) and section(s) this case is
   derived from. Every case must trace to something documented — if you
   can't cite a doc section, that's a signal the case is either
   untested-project-behavior (fine, but say so explicitly) or a guess (not
   fine — go verify against the docs first).
-  - **Path convention:** always write the path rooted at the repo layout —
-    `skypermit/docs/<file>.md` — never `../skypermit/...`. A relative path
-    only resolves correctly from this skill's own directory; a
-    repo-rooted path stays correct wherever the case gets copied (a
-    ticket, a PR description, a test file elsewhere in this kit).
+  - **Link convention:** a markdown link to the page in space `SD` by page
+    ID — `[06 — Business Rules](https://iv-skypermit.atlassian.net/wiki/spaces/SD/pages/262146)`.
+    Never a file path (`skypermit/docs/...`, `../skypermit/...`) — the docs
+    moved to Confluence. An ID-based URL survives page renames and moves
+    and stays clickable wherever the case gets copied (a ticket, a PR
+    description, a test file elsewhere in this kit).
   - **Anchor choice, most to least stable:** prefer a `rule_reference`
     value (e.g. `OH-1 §2.3`) when the case is about a gate failure — these
     are the actual citations `skypermit` returns in its `422` body, so
@@ -32,6 +35,8 @@ traceability.
     has no section number for that content — and if a case's numbered
     section ever stops matching what's cited, that's a signal to re-check
     the doc, not to silently keep the old number.
+- **Technique** — `BV`, `EP` or `ST`, plus the one value, partition or
+  transition this case exercises (e.g. `BV — limit + 1 min`).
 - **Role(s)** — Operator, Reviewer, or both (name the handoff point if
   both).
 - **Preconditions** — data/state that must exist before the test acts.
@@ -53,7 +58,9 @@ traceability.
 ```markdown
 ### E2E-<portal>-<seq>: <Title>
 
-**Doc ref:** `skypermit/docs/<file>.md` — `<rule_reference or §section>`
+**Doc ref:** [<page title>](https://iv-skypermit.atlassian.net/wiki/spaces/SD/pages/<page_id>) — `<rule_reference or §section>`
+
+**Technique:** <BV | EP | ST> — <value / partition / transition>
 
 **Role(s):** <Operator | Reviewer | Operator → Reviewer>
 
@@ -78,7 +85,7 @@ traceability.
 ```markdown
 ### E2E-OP-002: Illegal re-submit of an UNDER_REVIEW request
 
-**Doc ref:** `skypermit/docs/02-state-machine.md` (transition table,
+**Doc ref:** [02 — Request Lifecycle (State Machine)](https://iv-skypermit.atlassian.net/wiki/spaces/SD/pages/557079) (transition table,
 "Every other pair ... is illegal and returns 409")
 
 **Role(s):** Operator
@@ -98,7 +105,7 @@ traceability.
   `UNDER_REVIEW` from itself.
 - Underlying request: `409`, state unchanged at `UNDER_REVIEW`.
 
-**Rationale:** `02-state-machine.md` names re-submitting an already
+**Rationale:** The state-machine page names re-submitting an already
 `UNDER_REVIEW` request as an explicit illegal-transition example. A UI
 that silently "succeeds" here would be masking a real `409` from the
 operator.

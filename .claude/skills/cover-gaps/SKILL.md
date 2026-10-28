@@ -1,6 +1,6 @@
 ---
 name: cover-gaps
-description: Знаходить бізнес-правила SkyPermit без тест-кейсів, генерує кейси через test-case-creator і пропускає лише перевірені tc-verifier.
+description: Знаходить бізнес-правила SkyPermit без тест-кейсів, генерує UI-кейси через ui-test-case-creator і пропускає лише перевірені tc-verifier.
 argument-hint: "[max-rules] [gate]"
 disable-model-invocation: true   # дорогий пайплайн — лише ручний /виклик
 allowed-tools:
@@ -34,9 +34,9 @@ message in `open_questions` so the user sees it).
 Each `### <rule_reference> — <condition>` block above is one rule to cover.
 `case_id` and `file` are pre-assigned — never change them.
 
-## Step 2 — generate (test-case-creator, Sonnet)
+## Step 2 — generate (ui-test-case-creator, Sonnet)
 
-For every rule block, invoke the `test-case-creator` skill with the block
+For every rule block, invoke the `ui-test-case-creator` skill with the block
 text verbatim as its argument (heading line plus all its `- ` lines, and the
 `## <GATE>` it sits under). Issue the calls for all blocks in one message so
 they run side by side; each writes its own file, so they don't collide.
@@ -46,10 +46,13 @@ Each returns one JSON line: `written` or `blocked` with a reason. A
 
 ## Step 3 — gate (tc-verifier, Haiku)
 
-For every `written` case, launch the `tc-verifier` agent with
-`file`, `case_id`, `rule_reference` and `gate`. Again, all in one message.
+For every `written` file, launch the `tc-verifier` agent with
+`file`, `rule_reference` and `gate`. Again, all in one message.
 
 ## Step 4 — act on verdicts
+
+The file's verdict is the verifier's `verdict` (the worst of its cases);
+reasons and questions are listed per case ID.
 
 | Verdict | Case file | Result entry | Also |
 |---|---|---|---|

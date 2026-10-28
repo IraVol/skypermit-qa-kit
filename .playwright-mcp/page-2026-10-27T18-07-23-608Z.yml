@@ -1,0 +1,22 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Skypermit" [ref=e5] [cursor=pointer]:
+          - /url: /
+        - group "Portal" [ref=e6]:
+          - link "Operator" [ref=e7] [cursor=pointer]:
+            - /url: /operator/pilots
+          - link "Reviewer" [ref=e8] [cursor=pointer]:
+            - /url: /reviewer
+        - generic [ref=e9]: Checking session…
+    - main [ref=e10]:
+      - paragraph [ref=e11]: Checking session…
+    - contentinfo [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]: Skypermit / internal
+        - generic [ref=e15]: Rules revision 2026.08
+        - link "API reference" [ref=e16] [cursor=pointer]:
+          - /url: /api-docs
+        - generic [ref=e17]: Operator portal
+  - alert [ref=e18]

@@ -15,24 +15,43 @@ treat it as the read-only system under test.
 
 ## The system under test
 
-Read these in `../skypermit` before writing any test:
+Start with `../skypermit/CLAUDE.md` — entry point for the app itself: stack,
+gate implementation status, conventions.
 
-1. `../skypermit/CLAUDE.md` — entry point for the app itself: stack, gate
-   implementation status, conventions.
-2. `../skypermit/docs/01-data-model.md` — entities, fields, enums.
-3. `../skypermit/docs/02-state-machine.md` — the seven flight-request states
-   and legal transitions (illegal transitions must return `409`).
-4. `../skypermit/docs/03-api-contract.md` — all endpoints under `/api/v1`,
-   status codes, and the `422` error body shape (`failing_gate`,
-   `rule_reference`, `message`).
-5. `../skypermit/docs/04-frontend-spec.md` — the two portals (operator,
-   reviewer) and, critically, the **`data-testid` contract**: every
-   interactive element carries a stable `data-testid` meant to be bound by
-   automated suites. This is the primary hook for any E2E testing here.
-6. `../skypermit/docs/06-business-rules.md` (and `07-clarifications.md` for
-   corrections) — the real gate logic (`PILOT`, `AIRCRAFT`, `ZONE`,
-   `TIME_WINDOW`) and their `rule_reference` citations, needed to assert on
-   specific `422` responses correctly.
+The product docs live in **Confluence**, space `SD` ("SkyPermit Docs") on
+`iv-skypermit.atlassian.net` (cloudId `bea84479-f55e-4409-bbc6-af79e0add67a`).
+Read them before writing any test with `mcp__atlassian__getConfluencePage`
+(`contentFormat: "markdown"`), by page ID — not from `../skypermit/docs`:
+
+| Page | ID | What it gives you |
+|---|---|---|
+| 01 — Data Model | `557058` | entities, fields, enums |
+| 02 — Request Lifecycle (State Machine) | `557079` | the seven flight-request states and legal transitions (illegal transitions must return `409`) |
+| 03 — API Contract | `66147` | all endpoints under `/api/v1`, status codes, and the `422` error body shape (`failing_gate`, `rule_reference`, `message`) |
+| 04 — Frontend Scope | `66168` | the two portals (operator, reviewer) and, critically, the **`data-testid` contract** — the primary hook for any E2E testing here |
+| 05 — Open Questions (Canonical Status) | `66188` | what is still unresolved |
+| 06 — Business Rules | `262146` | the real gate logic (`PILOT`, `AIRCRAFT`, `ZONE`, `TIME_WINDOW`) and their `rule_reference` citations (§1, §6) |
+| 07 — Clarifications From the Business Rules Owner | `66208` | corrections to 06 — where they conflict, 07 governs |
+
+Page bodies still cross-reference each other as `docs/0N-*.md` — read that as
+the Confluence page with the same number. Page IDs are stable, titles may
+change; if an ID stops resolving, find the page with
+`mcp__atlassian__searchConfluenceUsingCql` (`space = SD AND title ~ "06"`)
+and fix this table.
+
+**Selectors are not looked up in Confluence.** The frontend page describes
+the `data-testid` contract; whether a selector exists is confirmed by
+grepping `../skypermit/app` and `../skypermit/components`
+(`.claude/rules/selector-discipline.md`).
+
+**Exception — `scripts/uncovered-rules.mjs`.** It is plain Node with no MCP
+access, so it still parses the local `../skypermit/docs/06-business-rules.md`
+and `07-clarifications.md`. That keeps the local copy load-bearing for
+`/cover-gaps` Step 1 (which rules are uncovered, their rule text, case IDs);
+ui-test-case-creator and tc-verifier read Confluence. If the rule block and
+Confluence disagree, Confluence governs — the verifier judges against it,
+and the drift means the local docs need re-syncing (report it against
+`skypermit`; don't work around it in a case).
 
 Key facts worth not re-deriving:
 

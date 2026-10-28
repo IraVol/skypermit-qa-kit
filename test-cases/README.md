@@ -7,11 +7,11 @@ test-cases/<module>/<file>.md
 ```
 
 Each file holds one or more cases in the format defined by
-`.claude/skills/test-case-creator/templates/test-case.md` (ID, Title, Doc
+`.claude/skills/ui-test-case-creator/templates/test-case.md` (ID, Title, Doc
 ref, Role(s), Preconditions, Steps, Expected result, Rationale). This
 directory is the live, growing registry of cases to actually implement and
 track — not teaching material. Worked examples that teach the format live
-in `.claude/skills/test-case-creator/examples/` instead; don't move those
+in `.claude/skills/ui-test-case-creator/examples/` instead; don't move those
 here, and don't treat this directory's cases as duplicates of them even if
 a case here covers the same scenario.
 
