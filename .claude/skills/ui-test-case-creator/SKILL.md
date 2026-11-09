@@ -1,6 +1,6 @@
 ---
 name: ui-test-case-creator
-description: Writes the UI/E2E test cases for ONE SkyPermit business rule (rule_reference + gate) into test-cases/ — cases driven through the operator/reviewer portal forms and bound to data-testid, never calling /api/v1 directly. Derives the full set with test design techniques — boundary values (BV), equivalence partitions (EP) and state transitions (ST) — each case atomic, in the kit's template format. Use when a specific uncovered rule needs UI cases — called per rule by /cover-gaps, or directly with a rule block from scripts/uncovered-rules.mjs. Not for API-level cases against /api/v1 (a separate API generator skill covers those), reviewing existing cases, or open-ended test design without a rule block.
+description: Writes the UI/E2E test cases for ONE SkyPermit business rule (rule_reference + gate) into test-cases/ — cases driven through the operator/reviewer portal forms and bound to data-testid, never calling /api/v1 directly. Derives the full set with test design techniques — boundary values (BV), equivalence partitions (EP) and state transitions (ST) — each case atomic, in the kit's template format. Use when a specific uncovered rule needs UI cases — called per rule by /cover-gaps, or directly with a rule block from scripts/uncovered-rules.mjs. Not for API-level cases against /api/v1 (api-test-case-creator covers those), reviewing existing cases, or open-ended test design without a rule block.
 argument-hint: "<rule block: rule_reference, gate, condition, case_id, file, rule>"
 model: sonnet
 context: fork

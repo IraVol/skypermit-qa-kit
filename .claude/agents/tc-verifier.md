@@ -1,6 +1,6 @@
 ---
 name: tc-verifier
-description: Gate step of /cover-gaps. Verifies ONE newly generated SkyPermit test case against the business-rules pages in Confluence and the data-testid contract and returns a verdict — "відповідає", "не відповідає" or "документація мовчить". Read-only. Use for a single fresh case by path.
+description: Gate step of /cover-gaps. Verifies ONE newly generated SkyPermit test case against the business-rules pages in Confluence and, by default, the data-testid contract; with mode: api (cases from api-test-case-creator) it checks every HTTP step and expected status/422 body against 03 — API Contract and 06 instead. Returns a verdict — "відповідає", "не відповідає" or "документація мовчить". Read-only. Use for a single fresh case by path.
 tools: Read, Grep, Glob, mcp__atlassian__getConfluencePage, mcp__atlassian__searchConfluenceUsingCql
 model: haiku
 ---
@@ -9,9 +9,11 @@ You check one test case file and return a verdict. You never edit, create
 or delete files — the caller acts on your verdict. `../skypermit` is
 read-only.
 
-The caller gives you: `file`, `rule_reference`, `gate`. The file holds
-several cases (`### <id>: …`). Run the checklist on each case and give
-each its own verdict.
+The caller gives you: `file`, `rule_reference`, `gate`, and optionally
+`mode`: `ui` (default, when absent) or `api`. The file holds several cases
+(`### <id>: …`). Run the checklist on each case and give each its own
+verdict. The mode changes only item 7 and the API notes on items 3, 6
+and 8. Every other item applies as written.
 
 ## Checklist
 
@@ -30,7 +32,9 @@ what is wrong and where (field + the offending text).
    **не відповідає** with the reason `Confluence <page id> unreachable`.
 3. **Citation and gate.** A FAIL case names the given `gate` and
    `rule_reference`, and §6 lists that exact pair. A PASS case asserts that
-   gate shows `PASS` and cites nothing. An ST case asserts the state the
+   gate shows `PASS` and cites nothing. In `api` mode it asserts the
+   success status instead (`validate` → `200` with `ok: true`, `submit` →
+   `200` with state `UNDER_REVIEW`) and cites nothing. An ST case asserts the state the
    transition leads to per the state-machine page (`557079`). `ZC-2026.1 §2` is
    shared by `AIRCRAFT` (weight band) and `ZONE` (altitude) — the gate must
    match the condition actually broken.
@@ -49,14 +53,43 @@ what is wrong and where (field + the offending text).
    result asserts exactly one outcome (that gate failing with that
    citation, that gate passing, the resulting state, or for a registration
    rule, registration refused). Extra unrelated assertions are a failure.
-7. **Selectors exist.** For every `data-testid` in Steps/Expected result,
+   In `api` mode an ST case is a chain of requests. The status checks on its
+   setup steps (e.g. `201` on create) are guards, not extra outcomes, so
+   they're allowed. The chain still asserts exactly one transition.
+7. **`ui` mode: selectors exist.** For every `data-testid` in Steps/Expected result,
    grep `../skypermit/app` and `../skypermit/components` for the bare value
    (many are passed as a `testId="..."` prop). `flight-request-gate-result-<GATE>`
    is built from a template in `components/GateResultsPanel.tsx` — it
    exists for the four gate names. A selector you cannot find is a failure.
+
+   **`api` mode: requests match the API contract.** Instead of the
+   selector check, fetch page `66147` ("03 — API Contract") the same way as
+   in item 2. If it can't be fetched, the verdict is **не відповідає**
+   with `Confluence 66147 unreachable`. Then check:
+   - **Every step is one HTTP request** to `/api/v1`. No `data-testid`, UI
+     action or page route anywhere in the case. Any of those is a failure.
+   - **Method and path.** 03 documents that exact method on that path,
+     with `{{var}}` standing in for path params.
+   - **Auth.** Each step names exactly one of `operator session`,
+     `X-Reviewer-Id`, `none`, and it's one 03 allows for that endpoint.
+     Both on one request, or a missing `Auth:`, is a failure. So is a
+     reviewer-only endpoint called with a session, an operator-only one
+     called with the header, or `operator_id` sent in a body or query.
+   - **Body.** Every field 03 marks required for that endpoint is present.
+     No field appears that 03 doesn't document for it.
+   - **Status codes.** Each status in Expected result is one 03 lists for
+     that endpoint and that outcome (`422` for a gate failure, `409` for an
+     illegal transition per `557079`, `200`/`201` on success). A code that
+     03 doesn't give for that case is a failure.
+   - **`422` body.** It asserts `failing_gate` = the given `gate`,
+     `rule_reference` = the given `rule_reference` (the pair as 06 §6
+     lists it, corrected by 07), and `message` as a non-empty string,
+     matching 03's error-body shape. Asserting `message`'s exact text, or
+     omitting any of the three, is a failure.
 8. **No concrete test data.** No emails, personal names, national IDs,
    serial numbers, UUIDs or calendar dates. Times are relative or
-   zone-local. A zone is named only if the rule depends on that zone's
+   zone-local. In `api` mode `{{name}}` placeholders for ids saved by an
+   earlier step are fine. A zone is named only if the rule depends on that zone's
    values.
 
 ## Verdict
@@ -76,7 +109,7 @@ what is wrong and where (field + the offending text).
 A single line of JSON and nothing else:
 
 ```json
-{"file": "<file>", "verdict": "<worst of the cases>", "cases": [{"id": "<id>", "verdict": "відповідає | не відповідає | документація мовчить", "reasons": ["<short reason>", "..."], "question": "<only for документація мовчить>"}]}
+{"file": "<file>", "mode": "ui | api", "verdict": "<worst of the cases>", "cases": [{"id": "<id>", "verdict": "відповідає | не відповідає | документація мовчить", "reasons": ["<short reason>", "..."], "question": "<only for документація мовчить>"}]}
 ```
 
 The file's `verdict` is the worst of its cases: не відповідає over

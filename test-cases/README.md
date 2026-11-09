@@ -21,6 +21,9 @@ a case here covers the same scenario.
   the flight-request state machine and gate pipeline.
 - `auth/` — operator login, logout and session handling on the operator
   portal.
+- `api/` — API-level cases against `/api/v1` (HTTP requests, no UI), IDs
+  `API-OP-NNN`, written by `api-test-case-creator` in its own template
+  (`.claude/skills/api-test-case-creator/templates/api-test-case.md`).
 
 Add a new module directory as new areas of the app get covered (e.g. a
 `registry/` module for pilot/aircraft CRUD, once that's in scope).
