@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "Every expected 422 names failing_gate TIME_WINDOW and rule_reference exactly `TSD-4 §3` (never the illustrative `TSD-4 §3.2`).",
+      "passed": true,
+      "evidence": "All 6 expected 422s: failing_gate TIME_WINDOW, rule_reference `TSD-4 §3`; no §3.2 anywhere."
+    },
+    {
+      "text": "Boundary cases cover both ends of the range one minute apart: 14 min and 15 min on the lower end, 240 min and 241 min on the upper end.",
+      "passed": true,
+      "evidence": "BV .1–.6 = 14, 15, 16, 239, 240, 241 min."
+    },
+    {
+      "text": "The at-limit durations 15 min and 240 min are expected to pass TIME_WINDOW (the range is inclusive per 06 §1.4).",
+      "passed": true,
+      "evidence": ".2 (15 min) and .5 (240 min) expect 200 on validate."
+    },
+    {
+      "text": "At least one state-transition chain submits a request that failed on duration and then expects 409 when it is submitted again from REJECTED.",
+      "passed": true,
+      "evidence": ".9: submit 10-min window → 422, second submit → 409."
+    },
+    {
+      "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+      "passed": true,
+      "evidence": "Every step 'Auth: operator session'; no X-Reviewer-Id, no operator_id."
+    },
+    {
+      "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+      "passed": true,
+      "evidence": "No `message` = ... assertions; only 'message non-empty'."
+    },
+    {
+      "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+      "passed": true,
+      "evidence": "No dates/emails/UUIDs; windows relative to request time."
+    },
+    {
+      "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+      "passed": true,
+      "evidence": "Asserted fields: state, failing_gate, rule_reference, rejection_reason, message; validate success asserts status only."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 70.3,
+    "total_duration_seconds": 70.3
+  }
+}

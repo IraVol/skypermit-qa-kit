@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: library-loans-gaps
+expected_outcome: |
+  A design JSON that keeps to the spec text: the ambiguous 'between 1 and 3' range and the unnamed reservation-expiry target state go to unknowns, the two different daily fine amounts are reported as a conflict with both quotes, unlisted state × action pairs are unknown (the spec has no blanket rule), and no error codes or messages are invented.
+context:
+  scaffold_script: place-files.sh

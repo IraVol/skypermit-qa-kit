@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+      "passed": true,
+      "evidence": "check-design.mjs: OK — BV 3 (9 values), EP 4, ST n/a, unknowns 5."
+    },
+    {
+      "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+      "passed": true,
+      "evidence": "All BV/EP items carry verbatim quotes (checker-verified); ST n/a."
+    },
+    {
+      "text": "Boundary values are 14/15/16 min at the lower end and 239/240/241 min at the upper end, with 15 and 240 expected valid.",
+      "passed": true,
+      "evidence": "BV-01 14/15/16 (15 valid), BV-02 239/240/241 (240 valid)."
+    },
+    {
+      "text": "The inclusivity of both ends is justified by the 06 text 'inclusive at both ends'.",
+      "passed": true,
+      "evidence": "BV-01/02 quote line 95 '15–240 minutes, inclusive at both ends.'"
+    },
+    {
+      "text": "A window whose window_end is at or before window_start is an invalid class, backed by the 'strictly after' text.",
+      "passed": true,
+      "evidence": "EP-04 'end not strictly after start' invalid, quoting the strictly-after text; outcome → U-02."
+    },
+    {
+      "text": "Every outcome on violation is either taken from 06 (422, TIME_WINDOW, TSD-4 §3) or marked unknown; no 400 or other status code is asserted.",
+      "passed": true,
+      "evidence": "Only outcome used: 422 / TIME_WINDOW / TSD-4 §3 quoted from 06 lines 24/188; otherwise null + unknown. No 400."
+    },
+    {
+      "text": "No state transition, status code or rule appears that 06 itself does not state (e.g. no 409, no submit/approve transitions from 02).",
+      "passed": true,
+      "evidence": "No transitions or 409; ST marked not_applicable."
+    },
+    {
+      "text": "The design stays on duration: no BV/EP for lead time, advance booking, curfew, overlap, weight bands or other rules.",
+      "passed": true,
+      "evidence": "Only duration BV/EP; other TIME_WINDOW checks appear only as U-04 (keep valid)."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 118.7,
+    "total_duration_seconds": 118.7
+  }
+}

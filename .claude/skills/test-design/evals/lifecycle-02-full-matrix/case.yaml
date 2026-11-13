@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: lifecycle-02-full-matrix
+expected_outcome: |
+  A design JSON whose ST part lists all seven states and every action/event in 02 and fills the full state × action matrix, using the blanket 'any pair not listed is illegal and returns 409' rule for unlisted pairs, with APPROVED × cancel legal under the 2-hour guard; every quote verbatim from 02.

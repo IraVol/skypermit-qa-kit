@@ -1,0 +1,426 @@
+{
+  "metadata": {
+    "skill_name": "api-test-case-creator",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-11-12T17:23:11Z",
+    "evals_run": [
+      "duration-range-tsd-4-s3",
+      "inactive-zone-unexercisable",
+      "weight-band-aircraft-gate"
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": "duration-range-tsd-4-s3",
+      "eval_name": "duration-range-tsd-4-s3",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 70.3,
+        "tokens": 70205,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Every expected 422 names failing_gate TIME_WINDOW and rule_reference exactly `TSD-4 §3` (never the illustrative `TSD-4 §3.2`).",
+          "passed": true,
+          "evidence": "All 6 expected 422s: failing_gate TIME_WINDOW, rule_reference `TSD-4 §3`; no §3.2 anywhere."
+        },
+        {
+          "text": "Boundary cases cover both ends of the range one minute apart: 14 min and 15 min on the lower end, 240 min and 241 min on the upper end.",
+          "passed": true,
+          "evidence": "BV .1–.6 = 14, 15, 16, 239, 240, 241 min."
+        },
+        {
+          "text": "The at-limit durations 15 min and 240 min are expected to pass TIME_WINDOW (the range is inclusive per 06 §1.4).",
+          "passed": true,
+          "evidence": ".2 (15 min) and .5 (240 min) expect 200 on validate."
+        },
+        {
+          "text": "At least one state-transition chain submits a request that failed on duration and then expects 409 when it is submitted again from REJECTED.",
+          "passed": true,
+          "evidence": ".9: submit 10-min window → 422, second submit → 409."
+        },
+        {
+          "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+          "passed": true,
+          "evidence": "Every step 'Auth: operator session'; no X-Reviewer-Id, no operator_id."
+        },
+        {
+          "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+          "passed": true,
+          "evidence": "No `message` = ... assertions; only 'message non-empty'."
+        },
+        {
+          "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+          "passed": true,
+          "evidence": "No dates/emails/UUIDs; windows relative to request time."
+        },
+        {
+          "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+          "passed": true,
+          "evidence": "Asserted fields: state, failing_gate, rule_reference, rejection_reason, message; validate success asserts status only."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "inactive-zone-unexercisable",
+      "eval_name": "inactive-zone-unexercisable",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.88,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 25.1,
+        "tokens": 58044,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No step calls an undocumented endpoint to create, update or deactivate a zone (no POST/PUT/PATCH/DELETE on /zones).",
+          "passed": true,
+          "evidence": "No case file written; no /zones write calls."
+        },
+        {
+          "text": "The run either returns blocked, or every written case states that the inactive zone must already exist as out-of-band data because all catalogue zones are active and the API cannot change them.",
+          "passed": true,
+          "evidence": "Returned blocked: 'cannot be exercised through the documented API… all six catalogue zones as active'."
+        },
+        {
+          "text": "The output says that the `ZC-2026.1 §4` citation is not yet fully confirmed (per 05/07).",
+          "passed": false,
+          "evidence": "final.json's blocked reason does not mention that ZC-2026.1 §4 is unconfirmed (only the executor's narration did)."
+        },
+        {
+          "text": "No case treats one of the six catalogue zones (KBP-CTR-3, ODS-CTR-5, LVV-RST-2, ZTM-RST-7, DNI-OPN-1, KHR-OPN-4) as inactive.",
+          "passed": true,
+          "evidence": "No zone named inactive."
+        },
+        {
+          "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+          "passed": true,
+          "evidence": "Vacuous — no steps written."
+        },
+        {
+          "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+          "passed": true,
+          "evidence": "Vacuous — no expected results written."
+        },
+        {
+          "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+          "passed": true,
+          "evidence": "Vacuous — no cases written."
+        },
+        {
+          "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+          "passed": true,
+          "evidence": "Vacuous — no expected results written."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "weight-band-aircraft-gate",
+      "eval_name": "weight-band-aircraft-gate",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 143.5,
+        "tokens": 82550,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Every expected 422 for the weight-band rule names failing_gate AIRCRAFT (not ZONE) with rule_reference `ZC-2026.1 §2`.",
+          "passed": true,
+          "evidence": "All 7 expected 422s: AIRCRAFT / `ZC-2026.1 §2`; ZONE never used."
+        },
+        {
+          "text": "Boundary cases use a band threshold from 06 §3 in grams (900/901, 3500/3501 or 12000/12001), one gram apart.",
+          "passed": true,
+          "evidence": "Triples 899/900/901, 3499/3500/3501, 11999/12000/12001 g."
+        },
+        {
+          "text": "Preconditions pin PILOT to pass for the chosen zone: the pilot rating covers that zone's class (CONTROLLED needs R_ADVANCED or R_BVLOS, RESTRICTED needs R_BVLOS) and certification is current.",
+          "passed": true,
+          "evidence": "RESTRICTED zones use R_BVLOS (13), CONTROLLED KBP-CTR-3 uses R_ADVANCED (7); certification current."
+        },
+        {
+          "text": "No case expects a self-registered (L1) operator to pass validate/submit in a zone that requires L2 or L3; such cases either state the higher level as pre-existing out-of-band data, or are skipped with a reason.",
+          "passed": true,
+          "evidence": "Pass-side cases require an L3/L2 operator 'that has to exist already… signed in via POST /auth/login' (line 12); fail-side uses L1 since AIRCRAFT runs before ZONE."
+        },
+        {
+          "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+          "passed": true,
+          "evidence": "Operator session only; no operator_id."
+        },
+        {
+          "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+          "passed": true,
+          "evidence": "No exact message asserted."
+        },
+        {
+          "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+          "passed": true,
+          "evidence": "No dates/emails/UUIDs; catalogue zone codes only where the rule depends on them."
+        },
+        {
+          "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+          "passed": true,
+          "evidence": "Validate success asserts status only (line 28: `200`.)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "duration-range-tsd-4-s3",
+      "eval_name": "duration-range-tsd-4-s3",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.88,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 94.0,
+        "tokens": 75326,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Every expected 422 names failing_gate TIME_WINDOW and rule_reference exactly `TSD-4 §3` (never the illustrative `TSD-4 §3.2`).",
+          "passed": true,
+          "evidence": "All duration 422s use TIME_WINDOW / `TSD-4 §3`. One extra gate-order case (.10) expects PILOT / OH-1 §2.3 — different rule, not counted against."
+        },
+        {
+          "text": "Boundary cases cover both ends of the range one minute apart: 14 min and 15 min on the lower end, 240 min and 241 min on the upper end.",
+          "passed": true,
+          "evidence": "BV .1–.6 = 14, 15, 16, 239, 240, 241 min."
+        },
+        {
+          "text": "The at-limit durations 15 min and 240 min are expected to pass TIME_WINDOW (the range is inclusive per 06 §1.4).",
+          "passed": true,
+          "evidence": "15 and 240 min expect 200 on validate."
+        },
+        {
+          "text": "At least one state-transition chain submits a request that failed on duration and then expects 409 when it is submitted again from REJECTED.",
+          "passed": true,
+          "evidence": ".12: submit 241 min → 422, REJECTED, second submit → 409."
+        },
+        {
+          "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+          "passed": true,
+          "evidence": "Operator steps use session; reviewer case .11 uses X-Reviewer-Id only (line 298). No operator_id."
+        },
+        {
+          "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+          "passed": true,
+          "evidence": "No exact message asserted."
+        },
+        {
+          "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+          "passed": true,
+          "evidence": "No dates/emails/UUIDs; window_start = now + 24 h."
+        },
+        {
+          "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+          "passed": false,
+          "evidence": "Lines 62, 89, 116, 143, 197 assert body `ok` = `true` on validate — field not defined in 01/03."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "inactive-zone-unexercisable",
+      "eval_name": "inactive-zone-unexercisable",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.88,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 70.4,
+        "tokens": 69076,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No step calls an undocumented endpoint to create, update or deactivate a zone (no POST/PUT/PATCH/DELETE on /zones).",
+          "passed": true,
+          "evidence": "No POST/PUT/PATCH/DELETE on /zones; the inactive zone is a DB insert precondition."
+        },
+        {
+          "text": "The run either returns blocked, or every written case states that the inactive zone must already exist as out-of-band data because all catalogue zones are active and the API cannot change them.",
+          "passed": true,
+          "evidence": "Header states all six seeded zones are active and the fixture must be inserted out of band; .1–.3 marked BLOCKED."
+        },
+        {
+          "text": "The output says that the `ZC-2026.1 §4` citation is not yet fully confirmed (per 05/07).",
+          "passed": true,
+          "evidence": "Line 9: 'Citation is not confirmed. 05 row 5 and 07 §4'."
+        },
+        {
+          "text": "No case treats one of the six catalogue zones (KBP-CTR-3, ODS-CTR-5, LVV-RST-2, ZTM-RST-7, DNI-OPN-1, KHR-OPN-4) as inactive.",
+          "passed": true,
+          "evidence": "Proposes a new row TST-INA-1; DNI-OPN-1 used only as the active control."
+        },
+        {
+          "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+          "passed": true,
+          "evidence": "Operator session only; no operator_id."
+        },
+        {
+          "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+          "passed": true,
+          "evidence": "No exact message asserted."
+        },
+        {
+          "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+          "passed": true,
+          "evidence": "No dates/emails/UUIDs."
+        },
+        {
+          "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+          "passed": false,
+          "evidence": "Line 120 asserts body `ok` = `true`. Also justifies expectations from app code (zone-gate.ts, seed.sql) — sources CLAUDE.md excludes."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "weight-band-aircraft-gate",
+      "eval_name": "weight-band-aircraft-gate",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.88,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 98.9,
+        "tokens": 77962,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Every expected 422 for the weight-band rule names failing_gate AIRCRAFT (not ZONE) with rule_reference `ZC-2026.1 §2`.",
+          "passed": true,
+          "evidence": "13 weight-band 422s are AIRCRAFT / ZC-2026.1 §2. ZONE / OH-1 §4 (7) are the L1-operator stops on the pass side, PILOT (1) a gate-order case — not weight-band failures."
+        },
+        {
+          "text": "Boundary cases use a band threshold from 06 §3 in grams (900/901, 3500/3501 or 12000/12001), one gram apart.",
+          "passed": true,
+          "evidence": "Triples 899/900/901, 3499/3500/3501, 11999/12000/12001 g."
+        },
+        {
+          "text": "Preconditions pin PILOT to pass for the chosen zone: the pilot rating covers that zone's class (CONTROLLED needs R_ADVANCED or R_BVLOS, RESTRICTED needs R_BVLOS) and certification is current.",
+          "passed": true,
+          "evidence": "R_BVLOS used for every class (42 mentions); R_BASIC only in the deliberate PILOT gate-order case."
+        },
+        {
+          "text": "No case expects a self-registered (L1) operator to pass validate/submit in a zone that requires L2 or L3; such cases either state the higher level as pre-existing out-of-band data, or are skipped with a reason.",
+          "passed": true,
+          "evidence": "Pass-side cases in L2/L3 zones expect 422 ZONE / OH-1 §4 for the L1 operator, never a pass."
+        },
+        {
+          "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+          "passed": true,
+          "evidence": "Reviewer case uses X-Reviewer-Id only (line 603); others operator session."
+        },
+        {
+          "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+          "passed": true,
+          "evidence": "No exact message asserted."
+        },
+        {
+          "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+          "passed": true,
+          "evidence": "No dates/emails/UUIDs (reviewer id 'rev-1' is a header label)."
+        },
+        {
+          "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+          "passed": false,
+          "evidence": "Line 408 asserts body `ok` = `true`; line 522 asserts failing_gate/rule_reference = null on a DRAFT (01 says only 'populated only on rejection')."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.96,
+        "stddev": 0.0693,
+        "min": 0.88,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 79.6333,
+        "stddev": 59.7493,
+        "min": 25.1,
+        "max": 143.5
+      },
+      "tokens": {
+        "mean": 70266.3333,
+        "stddev": 12253.1151,
+        "min": 58044,
+        "max": 82550
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.88,
+        "stddev": 0.0,
+        "min": 0.88,
+        "max": 0.88
+      },
+      "time_seconds": {
+        "mean": 87.7667,
+        "stddev": 15.2382,
+        "min": 70.4,
+        "max": 98.9
+      },
+      "tokens": {
+        "mean": 74121.3333,
+        "stddev": 4563.8433,
+        "min": 69076,
+        "max": 77962
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.08",
+      "time_seconds": "-8.1",
+      "tokens": "-3855"
+    }
+  },
+  "notes": [
+    "6 of 8 assertions per case pass in both configurations — they are non-discriminating; the +8 pp delta comes almost entirely from one assertion (no invented `ok` field), which every baseline run failed.",
+    "Biggest difference the assertions don't capture: all three baseline runs read ../skypermit (openapi.yaml, gate code, seed.sql) and derived expectations from the implementation — e.g. duration .8/.9 expect 400 'because the app does'. With the skill, all expectations came from Confluence. Add an assertion for this in iteration 2.",
+    "Skill flaw found in its own text: it prescribes 201 on create and 200 on validate/submit, but 03 documents no success codes. The with_skill weight run said so explicitly. Either 03 needs them or the skill should mark them as assumptions.",
+    "inactive-zone with_skill: 4 of its 7 passes are vacuous (no cases written → auth/message/data/field checks trivially true). The blocked return is correct, but its reason omits the unconfirmed ZC-2026.1 §4 citation.",
+    "Baselines wrote more cases (13 and 22 vs 10 and 14), including cross-gate combinations and reviewer-auth probes the skill forbids as non-atomic. Whether that is noise or value is a judgement call for the reviewer.",
+    "Cost: with_skill ~70k tokens / 80 s mean vs baseline ~74k / 88 s — the skill is slightly cheaper and faster. Single run per config, so no variance estimate."
+  ]
+}

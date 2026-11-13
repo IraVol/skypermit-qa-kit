@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+      "passed": true,
+      "evidence": "check-design.mjs: OK — BV 9 (27 values), EP 17, ST 4×5 = 20 cells, unknowns 16."
+    },
+    {
+      "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+      "passed": true,
+      "evidence": "Verbatim quotes on all items (checker-verified)."
+    },
+    {
+      "text": "The inclusivity of 'between 1 and 3 books' is recorded as unknown rather than assumed.",
+      "passed": true,
+      "evidence": "BV-02 '1 book' and BV-03 '3 books' expected unknown → U-02."
+    },
+    {
+      "text": "The 0.50 EUR vs 1 EUR daily fine is reported as a conflict that cites both passages.",
+      "passed": true,
+      "evidence": "U-09 kind conflict: line 11 '0.50 EUR per day' vs line 26 '1 EUR per day'."
+    },
+    {
+      "text": "The reservation-expiry transition's target state is recorded as unknown; no state such as EXPIRED or CANCELLED is invented.",
+      "passed": true,
+      "evidence": "U-08: no state fits an expired reservation; no new state invented."
+    },
+    {
+      "text": "State × action pairs the spec does not list are unknown, not illegal (the spec has no blanket rule).",
+      "passed": true,
+      "evidence": "16 unlisted cells are unknown (U-13), 4 legal."
+    },
+    {
+      "text": "No error codes, messages or system responses are invented; outcomes the spec does not state are null or unknown.",
+      "passed": true,
+      "evidence": "Outcomes only restate spec text ('member cannot borrow', cap 10 EUR); refusal mechanics → U-12."
+    },
+    {
+      "text": "Boundary triples exist for the 'at most 5 books' limit (4/5/6) and the 'fines over 5 EUR' threshold.",
+      "passed": true,
+      "evidence": "BV-01 4/5/6 books; BV-09 4.50/5.00/5.50 EUR."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 220.0,
+    "total_duration_seconds": 220.0
+  }
+}

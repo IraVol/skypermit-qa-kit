@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "No step calls an undocumented endpoint to create, update or deactivate a zone (no POST/PUT/PATCH/DELETE on /zones).",
+      "passed": true,
+      "evidence": "No case file written; no /zones write calls."
+    },
+    {
+      "text": "The run either returns blocked, or every written case states that the inactive zone must already exist as out-of-band data because all catalogue zones are active and the API cannot change them.",
+      "passed": true,
+      "evidence": "Returned blocked: 'cannot be exercised through the documented API… all six catalogue zones as active'."
+    },
+    {
+      "text": "The output says that the `ZC-2026.1 §4` citation is not yet fully confirmed (per 05/07).",
+      "passed": false,
+      "evidence": "final.json's blocked reason does not mention that ZC-2026.1 §4 is unconfirmed (only the executor's narration did)."
+    },
+    {
+      "text": "No case treats one of the six catalogue zones (KBP-CTR-3, ODS-CTR-5, LVV-RST-2, ZTM-RST-7, DNI-OPN-1, KHR-OPN-4) as inactive.",
+      "passed": true,
+      "evidence": "No zone named inactive."
+    },
+    {
+      "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+      "passed": true,
+      "evidence": "Vacuous — no steps written."
+    },
+    {
+      "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+      "passed": true,
+      "evidence": "Vacuous — no expected results written."
+    },
+    {
+      "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+      "passed": true,
+      "evidence": "Vacuous — no cases written."
+    },
+    {
+      "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+      "passed": true,
+      "evidence": "Vacuous — no expected results written."
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 1,
+    "total": 8,
+    "pass_rate": 0.88
+  },
+  "timing": {
+    "executor_duration_seconds": 25.1,
+    "total_duration_seconds": 25.1
+  }
+}

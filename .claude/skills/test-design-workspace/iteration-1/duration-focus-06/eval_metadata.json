@@ -1,0 +1,14 @@
+{
+  "eval_name": "duration-focus-06",
+  "prompt": "зроби тест-дизайн для specs/06-business-rules.md, тільки тривалість вікна польоту",
+  "assertions": [
+    "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+    "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+    "Boundary values are 14/15/16 min at the lower end and 239/240/241 min at the upper end, with 15 and 240 expected valid.",
+    "The inclusivity of both ends is justified by the 06 text 'inclusive at both ends'.",
+    "A window whose window_end is at or before window_start is an invalid class, backed by the 'strictly after' text.",
+    "Every outcome on violation is either taken from 06 (422, TIME_WINDOW, TSD-4 §3) or marked unknown; no 400 or other status code is asserted.",
+    "No state transition, status code or rule appears that 06 itself does not state (e.g. no 409, no submit/approve transitions from 02).",
+    "The design stays on duration: no BV/EP for lead time, advance booking, curfew, overlap, weight bands or other rules."
+  ]
+}

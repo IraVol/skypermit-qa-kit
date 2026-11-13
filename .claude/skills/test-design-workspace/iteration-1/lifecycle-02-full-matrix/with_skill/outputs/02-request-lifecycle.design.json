@@ -1,0 +1,1804 @@
+{
+  "spec": [
+    "specs/02-request-lifecycle.md"
+  ],
+  "focus": null,
+  "boundary_values": [
+    {
+      "id": "BV-01",
+      "parameter": "time between the cancel call on an `APPROVED` request and its `window_start`",
+      "boundary": "2 hours before `window_start` (cancellation deadline)",
+      "inclusive": true,
+      "step": "1 hour",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 58,
+          "text": "Cancelling an `APPROVED` request is only allowed **up to 2 hours before `window_start`**"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 38,
+          "text": "| `APPROVED` | cancel | `CANCELLED` | Operator-initiated, **only** up to 2 hours before `window_start`"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 59,
+          "text": "Closer than that, the cancel endpoint should reject it (`409`"
+        }
+      ],
+      "values": [
+        {
+          "position": "boundary-1",
+          "value": "1 hour before `window_start`",
+          "expected": "invalid",
+          "outcome": "409; state stays `APPROVED`",
+          "quotes": [
+            {
+              "file": "specs/02-request-lifecycle.md",
+              "line": 59,
+              "text": "Closer than that, the cancel endpoint should reject it (`409`"
+            }
+          ]
+        },
+        {
+          "position": "boundary",
+          "value": "2 hours before `window_start`",
+          "expected": "valid",
+          "outcome": "state `CANCELLED`",
+          "quotes": [
+            {
+              "file": "specs/02-request-lifecycle.md",
+              "line": 58,
+              "text": "Cancelling an `APPROVED` request is only allowed **up to 2 hours before `window_start`**"
+            },
+            {
+              "file": "specs/02-request-lifecycle.md",
+              "line": 38,
+              "text": "| `APPROVED` | cancel | `CANCELLED` | Operator-initiated, **only** up to 2 hours before `window_start`"
+            }
+          ]
+        },
+        {
+          "position": "boundary+1",
+          "value": "3 hours before `window_start`",
+          "expected": "valid",
+          "outcome": "state `CANCELLED`",
+          "quotes": [
+            {
+              "file": "specs/02-request-lifecycle.md",
+              "line": 38,
+              "text": "| `APPROVED` | cancel | `CANCELLED` | Operator-initiated, **only** up to 2 hours before `window_start`"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "equivalence_classes": [
+    {
+      "id": "EP-01",
+      "parameter": "time between the cancel call on an `APPROVED` request and its `window_start`",
+      "class": "2 hours or more before `window_start`",
+      "valid": true,
+      "representative": "24 hours before `window_start`",
+      "outcome": "state `CANCELLED`",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 58,
+          "text": "Cancelling an `APPROVED` request is only allowed **up to 2 hours before `window_start`**"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 38,
+          "text": "| `APPROVED` | cancel | `CANCELLED` | Operator-initiated, **only** up to 2 hours before `window_start`"
+        }
+      ]
+    },
+    {
+      "id": "EP-02",
+      "parameter": "time between the cancel call on an `APPROVED` request and its `window_start`",
+      "class": "closer than 2 hours before `window_start`",
+      "valid": false,
+      "representative": "1 hour before `window_start`",
+      "outcome": "409 (state-transition rejection, not a gate failure)",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 59,
+          "text": "Closer than that, the cancel endpoint should reject it (`409`"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 60,
+          "text": "this is a state-transition question, not a gate failure"
+        }
+      ]
+    },
+    {
+      "id": "EP-03",
+      "parameter": "gate outcome of submit on a `DRAFT` request",
+      "class": "all gates pass",
+      "valid": true,
+      "representative": "a `DRAFT` request that passes every gate",
+      "outcome": "state `UNDER_REVIEW`",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 18,
+          "text": "`UNDER_REVIEW` (all gates passed)"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 30,
+          "text": "| `SUBMITTED` | (gates pass, automatic) | `UNDER_REVIEW` | Not a caller-invoked action — part of the submit call's own outcome |"
+        }
+      ]
+    },
+    {
+      "id": "EP-04",
+      "parameter": "gate outcome of submit on a `DRAFT` request",
+      "class": "a gate fails",
+      "valid": false,
+      "representative": "a `DRAFT` request that fails one gate",
+      "outcome": "state `REJECTED`; `failing_gate` / `rejection_reason` populated",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 18,
+          "text": "`REJECTED` (a gate failed)"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 31,
+          "text": "| `SUBMITTED` | (gates fail, automatic) | `REJECTED` | Same — `failing_gate`/`rejection_reason` populated |"
+        }
+      ]
+    },
+    {
+      "id": "EP-05",
+      "parameter": "`note` on reject",
+      "class": "note provided",
+      "valid": true,
+      "representative": "a non-empty reviewer note",
+      "outcome": "state `REJECTED`",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 33,
+          "text": "| `UNDER_REVIEW` | reject | `REJECTED` | Reviewer-only; `note` required |"
+        }
+      ]
+    },
+    {
+      "id": "EP-06",
+      "parameter": "`note` on reject",
+      "class": "note missing",
+      "valid": false,
+      "representative": "reject call without `note`",
+      "outcome": null,
+      "unknown": "U-05",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 33,
+          "text": "`note` required"
+        }
+      ]
+    },
+    {
+      "id": "EP-07",
+      "parameter": "caller of approve / reject",
+      "class": "reviewer (`X-Reviewer-Id`)",
+      "valid": true,
+      "representative": "request carrying a reviewer's `X-Reviewer-Id`",
+      "outcome": "transition happens (`APPROVED` / `REJECTED`)",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 32,
+          "text": "Reviewer-only (`X-Reviewer-Id`)"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 33,
+          "text": "Reviewer-only;"
+        }
+      ]
+    },
+    {
+      "id": "EP-08",
+      "parameter": "caller of approve / reject",
+      "class": "not a reviewer",
+      "valid": false,
+      "representative": "operator session without `X-Reviewer-Id`",
+      "outcome": null,
+      "unknown": "U-06",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 32,
+          "text": "Reviewer-only (`X-Reviewer-Id`)"
+        }
+      ]
+    },
+    {
+      "id": "EP-09",
+      "parameter": "caller of cancel",
+      "class": "operator",
+      "valid": true,
+      "representative": "the operator who owns the request",
+      "outcome": "state `CANCELLED`",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 35,
+          "text": "| `DRAFT` | cancel | `CANCELLED` | Operator-initiated |"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 53,
+          "text": "Withdrawn by the operator."
+        }
+      ]
+    },
+    {
+      "id": "EP-10",
+      "parameter": "how an `APPROVED` request becomes `COMPLETED`",
+      "class": "maintenance completion endpoint",
+      "valid": true,
+      "representative": "call to the maintenance completion endpoint",
+      "outcome": "state `COMPLETED`",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 34,
+          "text": "| `APPROVED` | complete | `COMPLETED` | Maintenance endpoint only — never inferred from elapsed time |"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 54,
+          "text": "Set **only** by the maintenance completion endpoint"
+        }
+      ]
+    },
+    {
+      "id": "EP-11",
+      "parameter": "how an `APPROVED` request becomes `COMPLETED`",
+      "class": "elapsed time (window has passed)",
+      "valid": false,
+      "representative": "an `APPROVED` request whose window ended, with no completion call",
+      "outcome": "not set to `COMPLETED`",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 54,
+          "text": "never inferred from elapsed time"
+        }
+      ]
+    },
+    {
+      "id": "EP-12",
+      "parameter": "state of an existing request for the same aircraft, as seen by the overlap check when a new overlapping request is submitted (valid = it does not block the new request)",
+      "class": "`APPROVED` — counted",
+      "valid": false,
+      "representative": "existing `APPROVED` request on the same aircraft",
+      "outcome": "counted by the overlap check; the new request can fail at submit",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 63,
+          "text": "Only `APPROVED` and `UNDER_REVIEW` requests are counted by the overlap check"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 66,
+          "text": "a request that passed `validate` can still fail at `submit`"
+        }
+      ]
+    },
+    {
+      "id": "EP-13",
+      "parameter": "state of an existing request for the same aircraft, as seen by the overlap check when a new overlapping request is submitted (valid = it does not block the new request)",
+      "class": "`UNDER_REVIEW` — counted",
+      "valid": false,
+      "representative": "existing `UNDER_REVIEW` request on the same aircraft",
+      "outcome": "counted by the overlap check; the new request can fail at submit",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 63,
+          "text": "Only `APPROVED` and `UNDER_REVIEW` requests are counted by the overlap check"
+        }
+      ]
+    },
+    {
+      "id": "EP-14",
+      "parameter": "state of an existing request for the same aircraft, as seen by the overlap check when a new overlapping request is submitted (valid = it does not block the new request)",
+      "class": "`DRAFT` — invisible",
+      "valid": true,
+      "representative": "existing `DRAFT` request on the same aircraft",
+      "outcome": "ignored by the overlap check",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 65,
+          "text": "`DRAFT`, `REJECTED`, `CANCELLED` and `COMPLETED` are invisible to it"
+        }
+      ]
+    },
+    {
+      "id": "EP-15",
+      "parameter": "state of an existing request for the same aircraft, as seen by the overlap check when a new overlapping request is submitted (valid = it does not block the new request)",
+      "class": "`REJECTED` — invisible",
+      "valid": true,
+      "representative": "existing `REJECTED` request on the same aircraft",
+      "outcome": "ignored by the overlap check",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 65,
+          "text": "`DRAFT`, `REJECTED`, `CANCELLED` and `COMPLETED` are invisible to it"
+        }
+      ]
+    },
+    {
+      "id": "EP-16",
+      "parameter": "state of an existing request for the same aircraft, as seen by the overlap check when a new overlapping request is submitted (valid = it does not block the new request)",
+      "class": "`CANCELLED` — invisible",
+      "valid": true,
+      "representative": "existing `CANCELLED` request on the same aircraft",
+      "outcome": "ignored by the overlap check",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 65,
+          "text": "`DRAFT`, `REJECTED`, `CANCELLED` and `COMPLETED` are invisible to it"
+        }
+      ]
+    },
+    {
+      "id": "EP-17",
+      "parameter": "state of an existing request for the same aircraft, as seen by the overlap check when a new overlapping request is submitted (valid = it does not block the new request)",
+      "class": "`COMPLETED` — invisible",
+      "valid": true,
+      "representative": "existing `COMPLETED` request on the same aircraft",
+      "outcome": "ignored by the overlap check",
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 65,
+          "text": "`DRAFT`, `REJECTED`, `CANCELLED` and `COMPLETED` are invisible to it"
+        }
+      ]
+    },
+    {
+      "id": "EP-18",
+      "parameter": "state of an existing request for the same aircraft, as seen by the overlap check when a new overlapping request is submitted (valid = it does not block the new request)",
+      "class": "`SUBMITTED` — not listed",
+      "valid": "unknown",
+      "representative": "existing request in `SUBMITTED`",
+      "outcome": null,
+      "unknown": "U-09",
+      "quotes": []
+    }
+  ],
+  "state_transitions": {
+    "states": [
+      {
+        "name": "DRAFT",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 48,
+            "text": "| `DRAFT` | Created, never submitted. No gates have run. | no |"
+          }
+        ]
+      },
+      {
+        "name": "SUBMITTED",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 49,
+            "text": "| `SUBMITTED` | Transient. The submit call runs all four gates and leaves this state immediately"
+          }
+        ]
+      },
+      {
+        "name": "UNDER_REVIEW",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 50,
+            "text": "| `UNDER_REVIEW` | All gates passed. Awaiting a reviewer decision. | no |"
+          }
+        ]
+      },
+      {
+        "name": "APPROVED",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 51,
+            "text": "| `APPROVED` | Authorised. Still cancellable until the deadline (see below). | no |"
+          }
+        ]
+      },
+      {
+        "name": "REJECTED",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 52,
+            "text": "| `REJECTED` | Failed a gate, or refused by a reviewer. `failing_gate` and `rejection_reason` are populated. | **yes** |"
+          }
+        ]
+      },
+      {
+        "name": "CANCELLED",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 53,
+            "text": "| `CANCELLED` | Withdrawn by the operator. | **yes** |"
+          }
+        ]
+      },
+      {
+        "name": "COMPLETED",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 54,
+            "text": "| `COMPLETED` | Flight concluded. Set **only** by the maintenance completion endpoint — never inferred from elapsed time. | **yes** |"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "name": "submit",
+        "kind": "action",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 29,
+            "text": "| `DRAFT` | submit | `SUBMITTED` → immediately `UNDER_REVIEW` or `REJECTED` | Gates run synchronously; caller never observes `SUBMITTED` at rest |"
+          }
+        ]
+      },
+      {
+        "name": "gates pass",
+        "kind": "event",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 30,
+            "text": "| `SUBMITTED` | (gates pass, automatic) | `UNDER_REVIEW` | Not a caller-invoked action — part of the submit call's own outcome |"
+          }
+        ]
+      },
+      {
+        "name": "gates fail",
+        "kind": "event",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 31,
+            "text": "| `SUBMITTED` | (gates fail, automatic) | `REJECTED` | Same — `failing_gate`/`rejection_reason` populated |"
+          }
+        ]
+      },
+      {
+        "name": "approve",
+        "kind": "action",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 32,
+            "text": "| `UNDER_REVIEW` | approve | `APPROVED` | Reviewer-only (`X-Reviewer-Id`); writes a `ReviewAction` row |"
+          }
+        ]
+      },
+      {
+        "name": "reject",
+        "kind": "action",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 33,
+            "text": "| `UNDER_REVIEW` | reject | `REJECTED` | Reviewer-only; `note` required |"
+          }
+        ]
+      },
+      {
+        "name": "complete",
+        "kind": "action",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 34,
+            "text": "| `APPROVED` | complete | `COMPLETED` | Maintenance endpoint only — never inferred from elapsed time |"
+          }
+        ]
+      },
+      {
+        "name": "cancel",
+        "kind": "action",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 17,
+            "text": "`CANCELLED` via the cancel action"
+          }
+        ]
+      }
+    ],
+    "matrix": [
+      {
+        "id": "ST-01",
+        "from": "DRAFT",
+        "action": "submit",
+        "result": "legal",
+        "to": [
+          "UNDER_REVIEW",
+          "REJECTED"
+        ],
+        "guard": null,
+        "outcome": "passes through transient `SUBMITTED`, which the caller never observes at rest; ends in `UNDER_REVIEW` (all gates passed) or `REJECTED` (a gate failed)",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 29,
+            "text": "| `DRAFT` | submit | `SUBMITTED` → immediately `UNDER_REVIEW` or `REJECTED` | Gates run synchronously; caller never observes `SUBMITTED` at rest |"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 18,
+            "text": "either `UNDER_REVIEW` (all gates passed) or `REJECTED` (a gate failed)."
+          }
+        ]
+      },
+      {
+        "id": "ST-02",
+        "from": "DRAFT",
+        "action": "gates pass",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-03",
+        "from": "DRAFT",
+        "action": "gates fail",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-04",
+        "from": "DRAFT",
+        "action": "approve",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-05",
+        "from": "DRAFT",
+        "action": "reject",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-06",
+        "from": "DRAFT",
+        "action": "complete",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-07",
+        "from": "DRAFT",
+        "action": "cancel",
+        "result": "legal",
+        "to": "CANCELLED",
+        "guard": "operator-initiated",
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 35,
+            "text": "| `DRAFT` | cancel | `CANCELLED` | Operator-initiated |"
+          }
+        ]
+      },
+      {
+        "id": "ST-08",
+        "from": "SUBMITTED",
+        "action": "submit",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-09",
+        "from": "SUBMITTED",
+        "action": "gates pass",
+        "result": "legal",
+        "to": "UNDER_REVIEW",
+        "guard": "all gates passed",
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 30,
+            "text": "| `SUBMITTED` | (gates pass, automatic) | `UNDER_REVIEW` | Not a caller-invoked action — part of the submit call's own outcome |"
+          }
+        ]
+      },
+      {
+        "id": "ST-10",
+        "from": "SUBMITTED",
+        "action": "gates fail",
+        "result": "legal",
+        "to": "REJECTED",
+        "guard": "a gate failed",
+        "outcome": "`failing_gate` / `rejection_reason` populated",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 31,
+            "text": "| `SUBMITTED` | (gates fail, automatic) | `REJECTED` | Same — `failing_gate`/`rejection_reason` populated |"
+          }
+        ]
+      },
+      {
+        "id": "ST-11",
+        "from": "SUBMITTED",
+        "action": "approve",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-12",
+        "from": "SUBMITTED",
+        "action": "reject",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-13",
+        "from": "SUBMITTED",
+        "action": "complete",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-14",
+        "from": "SUBMITTED",
+        "action": "cancel",
+        "result": "legal",
+        "to": "CANCELLED",
+        "guard": "operator-initiated; only in the narrow window before gates resolve it automatically (see U-01)",
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 36,
+            "text": "| `SUBMITTED` | cancel | `CANCELLED` | Operator-initiated — only reachable in the narrow window before gates resolve it automatically |"
+          }
+        ]
+      },
+      {
+        "id": "ST-15",
+        "from": "UNDER_REVIEW",
+        "action": "submit",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 41,
+            "text": "re-submitting something already `UNDER_REVIEW`"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-16",
+        "from": "UNDER_REVIEW",
+        "action": "gates pass",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-17",
+        "from": "UNDER_REVIEW",
+        "action": "gates fail",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-18",
+        "from": "UNDER_REVIEW",
+        "action": "approve",
+        "result": "legal",
+        "to": "APPROVED",
+        "guard": "reviewer-only (`X-Reviewer-Id`)",
+        "outcome": "writes a `ReviewAction` row",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 32,
+            "text": "| `UNDER_REVIEW` | approve | `APPROVED` | Reviewer-only (`X-Reviewer-Id`); writes a `ReviewAction` row |"
+          }
+        ]
+      },
+      {
+        "id": "ST-19",
+        "from": "UNDER_REVIEW",
+        "action": "reject",
+        "result": "legal",
+        "to": "REJECTED",
+        "guard": "reviewer-only; `note` required",
+        "outcome": "`failing_gate` and `rejection_reason` are populated (per the REJECTED state row)",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 33,
+            "text": "| `UNDER_REVIEW` | reject | `REJECTED` | Reviewer-only; `note` required |"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 52,
+            "text": "`failing_gate` and `rejection_reason` are populated."
+          }
+        ]
+      },
+      {
+        "id": "ST-20",
+        "from": "UNDER_REVIEW",
+        "action": "complete",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-21",
+        "from": "UNDER_REVIEW",
+        "action": "cancel",
+        "result": "legal",
+        "to": "CANCELLED",
+        "guard": "operator-initiated",
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 37,
+            "text": "| `UNDER_REVIEW` | cancel | `CANCELLED` | Operator-initiated |"
+          }
+        ]
+      },
+      {
+        "id": "ST-22",
+        "from": "APPROVED",
+        "action": "submit",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-23",
+        "from": "APPROVED",
+        "action": "gates pass",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-24",
+        "from": "APPROVED",
+        "action": "gates fail",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-25",
+        "from": "APPROVED",
+        "action": "approve",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-26",
+        "from": "APPROVED",
+        "action": "reject",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          }
+        ]
+      },
+      {
+        "id": "ST-27",
+        "from": "APPROVED",
+        "action": "complete",
+        "result": "legal",
+        "to": "COMPLETED",
+        "guard": "maintenance endpoint only — never inferred from elapsed time",
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 34,
+            "text": "| `APPROVED` | complete | `COMPLETED` | Maintenance endpoint only — never inferred from elapsed time |"
+          }
+        ]
+      },
+      {
+        "id": "ST-28",
+        "from": "APPROVED",
+        "action": "cancel",
+        "result": "legal",
+        "to": "CANCELLED",
+        "guard": "operator-initiated, only up to 2 hours before `window_start`",
+        "outcome": "closer than 2 hours before `window_start` → `409`, state unchanged",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 38,
+            "text": "| `APPROVED` | cancel | `CANCELLED` | Operator-initiated, **only** up to 2 hours before `window_start`"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 58,
+            "text": "Cancelling an `APPROVED` request is only allowed **up to 2 hours before `window_start`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 59,
+            "text": "Closer than that, the cancel endpoint should reject it (`409`"
+          }
+        ]
+      },
+      {
+        "id": "ST-29",
+        "from": "REJECTED",
+        "action": "submit",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`REJECTED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-30",
+        "from": "REJECTED",
+        "action": "gates pass",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`REJECTED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-31",
+        "from": "REJECTED",
+        "action": "gates fail",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`REJECTED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-32",
+        "from": "REJECTED",
+        "action": "approve",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`REJECTED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-33",
+        "from": "REJECTED",
+        "action": "reject",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`REJECTED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-34",
+        "from": "REJECTED",
+        "action": "complete",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`REJECTED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-35",
+        "from": "REJECTED",
+        "action": "cancel",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`REJECTED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-36",
+        "from": "CANCELLED",
+        "action": "submit",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`CANCELLED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-37",
+        "from": "CANCELLED",
+        "action": "gates pass",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`CANCELLED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-38",
+        "from": "CANCELLED",
+        "action": "gates fail",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`CANCELLED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-39",
+        "from": "CANCELLED",
+        "action": "approve",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`CANCELLED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-40",
+        "from": "CANCELLED",
+        "action": "reject",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`CANCELLED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-41",
+        "from": "CANCELLED",
+        "action": "complete",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`CANCELLED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-42",
+        "from": "CANCELLED",
+        "action": "cancel",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 40,
+            "text": "`CANCELLED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-43",
+        "from": "COMPLETED",
+        "action": "submit",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 41,
+            "text": "`COMPLETED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-44",
+        "from": "COMPLETED",
+        "action": "gates pass",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 41,
+            "text": "`COMPLETED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-45",
+        "from": "COMPLETED",
+        "action": "gates fail",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": null,
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 41,
+            "text": "`COMPLETED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ],
+        "unknown": "U-12"
+      },
+      {
+        "id": "ST-46",
+        "from": "COMPLETED",
+        "action": "approve",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 41,
+            "text": "`COMPLETED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-47",
+        "from": "COMPLETED",
+        "action": "reject",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 41,
+            "text": "`COMPLETED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-48",
+        "from": "COMPLETED",
+        "action": "complete",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 41,
+            "text": "`COMPLETED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      },
+      {
+        "id": "ST-49",
+        "from": "COMPLETED",
+        "action": "cancel",
+        "result": "illegal",
+        "to": null,
+        "guard": null,
+        "outcome": "409",
+        "quotes": [
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 22,
+            "text": "**Any `(from, action)` pair not listed here is illegal and must return `409`**"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 41,
+            "text": "`COMPLETED`→anything"
+          },
+          {
+            "file": "specs/02-request-lifecycle.md",
+            "line": 42,
+            "text": "is illegal and returns `409`."
+          }
+        ]
+      }
+    ]
+  },
+  "unknowns": [
+    {
+      "id": "U-01",
+      "kind": "conflict",
+      "question": "`SUBMITTED` × cancel is listed as legal, but the same text says gates run synchronously inside the submit call and `SUBMITTED` is never observed at rest. Is cancel from `SUBMITTED` actually reachable, and how is a request put into `SUBMITTED` for a test?",
+      "why_it_matters": "ST cell SUBMITTED × cancel cannot be exercised, and every other SUBMITTED row cell (all illegal → 409) has no reachable setup.",
+      "affects": [
+        "ST-08",
+        "ST-09",
+        "ST-10",
+        "ST-11",
+        "ST-12",
+        "ST-13",
+        "ST-14"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 36,
+          "text": "only reachable in the narrow window before gates resolve it automatically"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 29,
+          "text": "Gates run synchronously; caller never observes `SUBMITTED` at rest"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 49,
+          "text": "a request should never be observed sitting in `SUBMITTED`"
+        }
+      ]
+    },
+    {
+      "id": "U-02",
+      "kind": "gap",
+      "question": "What does the submit call return (status code, body) when all gates pass and when a gate fails?",
+      "why_it_matters": "DRAFT × submit, EP-03 and EP-04 can only assert the resulting state, not the response.",
+      "affects": [
+        "ST-01",
+        "EP-03",
+        "EP-04"
+      ],
+      "quotes": []
+    },
+    {
+      "id": "U-03",
+      "kind": "gap",
+      "question": "Which are the \"four gates\" and in what order do they run? The file names only `AIRCRAFT` and `TIME_WINDOW`.",
+      "why_it_matters": "The gate-fail class (EP-04) cannot be split per gate and the expected `failing_gate` values cannot be listed.",
+      "affects": [
+        "EP-04",
+        "ST-10"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 49,
+          "text": "The submit call runs all four gates"
+        }
+      ]
+    },
+    {
+      "id": "U-04",
+      "kind": "gap",
+      "question": "When a reviewer rejects, what goes into `failing_gate` (no gate failed) and is `rejection_reason` the reviewer's `note`?",
+      "why_it_matters": "UNDER_REVIEW × reject can assert state `REJECTED` but not the content of the two fields the state table says are populated.",
+      "affects": [
+        "ST-19",
+        "EP-05"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 52,
+          "text": "Failed a gate, or refused by a reviewer. `failing_gate` and `rejection_reason` are populated."
+        }
+      ]
+    },
+    {
+      "id": "U-05",
+      "kind": "gap",
+      "question": "What does reject return when `note` is missing, and does an empty or whitespace-only note count as provided?",
+      "why_it_matters": "EP-06 can only be marked invalid; neither the response nor the malformed-note class can be asserted.",
+      "affects": [
+        "EP-05",
+        "EP-06"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 33,
+          "text": "`note` required"
+        }
+      ]
+    },
+    {
+      "id": "U-06",
+      "kind": "gap",
+      "question": "What happens when approve / reject is called by a non-reviewer, cancel by someone other than the operator, or complete outside the maintenance endpoint?",
+      "why_it_matters": "EP-08 has no outcome; EP-09 and EP-10 have no stated invalid side to test.",
+      "affects": [
+        "EP-08",
+        "EP-09",
+        "EP-10"
+      ],
+      "quotes": []
+    },
+    {
+      "id": "U-07",
+      "kind": "gap",
+      "question": "Does reject also write a `ReviewAction` row? Only approve is said to.",
+      "why_it_matters": "UNDER_REVIEW × reject cannot assert (or deny) an audit row.",
+      "affects": [
+        "ST-19"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 32,
+          "text": "writes a `ReviewAction` row"
+        }
+      ]
+    },
+    {
+      "id": "U-08",
+      "kind": "gap",
+      "question": "Cancellation deadline details: at what precision is \"2 hours\" measured (is 1 h 59 min rejected?), against which clock, and is cancel after `window_start` has passed also `409`? The rule's source (`docs/06-business-rules.md` §5) is not an input.",
+      "why_it_matters": "BV-01 uses a 1-hour step from the stated unit; sub-hour values and the past-window case are not covered by the text.",
+      "affects": [
+        "BV-01",
+        "EP-01",
+        "EP-02",
+        "ST-28"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 61,
+          "text": "Source: `docs/06-business-rules.md` §5"
+        }
+      ]
+    },
+    {
+      "id": "U-09",
+      "kind": "gap",
+      "question": "Is a request in `SUBMITTED` counted by the overlap check? It is in neither the counted nor the invisible list.",
+      "why_it_matters": "EP-18 has no expected result.",
+      "affects": [
+        "EP-18"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 63,
+          "text": "Only `APPROVED` and `UNDER_REVIEW` requests are counted by the overlap check"
+        },
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 65,
+          "text": "`DRAFT`, `REJECTED`, `CANCELLED` and `COMPLETED` are invisible to it"
+        }
+      ]
+    },
+    {
+      "id": "U-10",
+      "kind": "gap",
+      "question": "What counts as an overlap (same aircraft + intersecting windows? inclusive ends?), and which gate — `AIRCRAFT` or `TIME_WINDOW` — is named as `failing_gate` when it trips?",
+      "why_it_matters": "EP-12/EP-13 can say the new request may fail at submit, but not with which `failing_gate`, nor where the overlap boundary is.",
+      "affects": [
+        "EP-12",
+        "EP-13"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 64,
+          "text": "the overlap check inside the `AIRCRAFT` / `TIME_WINDOW`"
+        }
+      ]
+    },
+    {
+      "id": "U-11",
+      "kind": "gap",
+      "question": "`validate` is mentioned but not defined: does it change state, and does the \"any pair not listed → 409\" rule apply to it?",
+      "why_it_matters": "It is left out of the ST action list; if it is a state action, every state × validate cell would be illegal → 409.",
+      "affects": [],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 66,
+          "text": "a request that passed `validate`"
+        }
+      ]
+    },
+    {
+      "id": "U-12",
+      "kind": "gap",
+      "question": "How does an illegal automatic event (gates pass / gates fail outside `SUBMITTED`) manifest? The `409` rule is about caller requests, and these events are not caller-invoked.",
+      "why_it_matters": "These cells are illegal by the blanket rule, but there is no request whose 409 a test could check.",
+      "affects": [
+        "ST-02",
+        "ST-03",
+        "ST-16",
+        "ST-17",
+        "ST-23",
+        "ST-24",
+        "ST-30",
+        "ST-31",
+        "ST-37",
+        "ST-38",
+        "ST-44",
+        "ST-45"
+      ],
+      "quotes": [
+        {
+          "file": "specs/02-request-lifecycle.md",
+          "line": 30,
+          "text": "Not a caller-invoked action"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "eval_name": "duration-range-tsd-4-s3",
+  "prompt": "напиши API-кейси на TSD-4 §3 — тривалість вікна польоту",
+  "assertions": [
+    "Every expected 422 names failing_gate TIME_WINDOW and rule_reference exactly `TSD-4 §3` (never the illustrative `TSD-4 §3.2`).",
+    "Boundary cases cover both ends of the range one minute apart: 14 min and 15 min on the lower end, 240 min and 241 min on the upper end.",
+    "The at-limit durations 15 min and 240 min are expected to pass TIME_WINDOW (the range is inclusive per 06 §1.4).",
+    "At least one state-transition chain submits a request that failed on duration and then expects 409 when it is submitted again from REJECTED.",
+    "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+    "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+    "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+    "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`."
+  ]
+}

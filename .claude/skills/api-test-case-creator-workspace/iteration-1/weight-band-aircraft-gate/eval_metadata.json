@@ -1,0 +1,14 @@
+{
+  "eval_name": "weight-band-aircraft-gate",
+  "prompt": "напиши API-кейси на ZC-2026.1 §2 — вагова категорія літака не дозволена в зоні",
+  "assertions": [
+    "Every expected 422 for the weight-band rule names failing_gate AIRCRAFT (not ZONE) with rule_reference `ZC-2026.1 §2`.",
+    "Boundary cases use a band threshold from 06 §3 in grams (900/901, 3500/3501 or 12000/12001), one gram apart.",
+    "Preconditions pin PILOT to pass for the chosen zone: the pilot rating covers that zone's class (CONTROLLED needs R_ADVANCED or R_BVLOS, RESTRICTED needs R_BVLOS) and certification is current.",
+    "No case expects a self-registered (L1) operator to pass validate/submit in a zone that requires L2 or L3; such cases either state the higher level as pre-existing out-of-band data, or are skipped with a reason.",
+    "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+    "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+    "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+    "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`."
+  ]
+}

@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: duration-range-tsd-4-s3
+expected_outcome: |
+  One case file for TIME_WINDOW / TSD-4 §3. BV covers both ends of 15–240 min (inclusive) with values one minute apart, EP and ST chains follow the skill, every 422 asserts failing_gate TIME_WINDOW and rule_reference TSD-4 §3, nothing undocumented in 03 is asserted, no absolute dates.

@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+      "passed": false,
+      "evidence": "Markdown file test-design-duration.md, no .design.json."
+    },
+    {
+      "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+      "passed": false,
+      "evidence": "EP-6 (midnight UTC) is marked 'виведено, прямо не сказано' with no quote; multi-day class likewise."
+    },
+    {
+      "text": "Boundary values are 14/15/16 min at the lower end and 239/240/241 min at the upper end, with 15 and 240 expected valid.",
+      "passed": true,
+      "evidence": "BV 14/15/16 and 239/240/241, 15 and 240 valid."
+    },
+    {
+      "text": "The inclusivity of both ends is justified by the 06 text 'inclusive at both ends'.",
+      "passed": true,
+      "evidence": "Quotes the line-95 Duration row including 'inclusive at both ends'."
+    },
+    {
+      "text": "A window whose window_end is at or before window_start is an invalid class, backed by the 'strictly after' text.",
+      "passed": true,
+      "evidence": "EP-4/EP-5 (zero, negative) invalid, citing 'strictly after'."
+    },
+    {
+      "text": "Every outcome on violation is either taken from 06 (422, TIME_WINDOW, TSD-4 §3) or marked unknown; no 400 or other status code is asserted.",
+      "passed": true,
+      "evidence": "422 / TIME_WINDOW / TSD-4 §3 from 06; 400 appears only as open question U-1."
+    },
+    {
+      "text": "No state transition, status code or rule appears that 06 itself does not state (e.g. no 409, no submit/approve transitions from 02).",
+      "passed": true,
+      "evidence": "No 02 transitions; gate-order cases use 06's evaluation-order text."
+    },
+    {
+      "text": "The design stays on duration: no BV/EP for lead time, advance booking, curfew, overlap, weight bands or other rules.",
+      "passed": true,
+      "evidence": "No BV/EP for other rules; two gate-order cases combine duration with PILOT/ZONE failures but don't design those rules."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 2,
+    "total": 8,
+    "pass_rate": 0.75
+  },
+  "timing": {
+    "executor_duration_seconds": 78.5,
+    "total_duration_seconds": 78.5
+  }
+}

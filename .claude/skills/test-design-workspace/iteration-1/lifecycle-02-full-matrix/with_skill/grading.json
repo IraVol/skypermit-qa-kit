@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+      "passed": true,
+      "evidence": "check-design.mjs: OK — BV 1 (3 values), EP 18, ST 7×7 = 49 cells, unknowns 12."
+    },
+    {
+      "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+      "passed": true,
+      "evidence": "Every BV/EP/state/action/cell has verbatim quotes (checker-verified)."
+    },
+    {
+      "text": "All seven states are listed: DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, COMPLETED.",
+      "passed": true,
+      "evidence": "States: DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, COMPLETED."
+    },
+    {
+      "text": "The actions include submit, approve, reject, complete and cancel.",
+      "passed": true,
+      "evidence": "Actions submit, approve, reject, complete, cancel + 2 events."
+    },
+    {
+      "text": "The ST matrix has exactly one entry for every state × action pair.",
+      "passed": true,
+      "evidence": "49 cells = 7 × 7, no duplicates (checker)."
+    },
+    {
+      "text": "Pairs not listed in 02 are marked illegal with outcome 409 citing the 'any (from, action) pair not listed here is illegal' text — not left unknown.",
+      "passed": true,
+      "evidence": "39 illegal cells quote the 'Any (from, action) pair not listed here is illegal and must return 409' rule."
+    },
+    {
+      "text": "APPROVED × cancel is legal under the 'up to 2 hours before window_start' guard, and the 2-hour deadline has a boundary triple.",
+      "passed": true,
+      "evidence": "APPROVED × cancel legal with the 2-hour guard; BV-01 triple 1 h / 2 h / 3 h (coarse: 1-hour step)."
+    },
+    {
+      "text": "Every action from REJECTED, CANCELLED and COMPLETED is illegal (409).",
+      "passed": true,
+      "evidence": "All actions from REJECTED, CANCELLED, COMPLETED are illegal / 409."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 236.0,
+    "total_duration_seconds": 236.0
+  }
+}

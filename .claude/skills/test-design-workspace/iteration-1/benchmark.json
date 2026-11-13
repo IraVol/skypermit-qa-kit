@@ -1,0 +1,427 @@
+{
+  "metadata": {
+    "skill_name": "test-design",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-11-12T17:31:34Z",
+    "evals_run": [
+      "duration-focus-06",
+      "library-loans-gaps",
+      "lifecycle-02-full-matrix"
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": "duration-focus-06",
+      "eval_name": "duration-focus-06",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 118.7,
+        "tokens": 62587,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+          "passed": true,
+          "evidence": "check-design.mjs: OK — BV 3 (9 values), EP 4, ST n/a, unknowns 5."
+        },
+        {
+          "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+          "passed": true,
+          "evidence": "All BV/EP items carry verbatim quotes (checker-verified); ST n/a."
+        },
+        {
+          "text": "Boundary values are 14/15/16 min at the lower end and 239/240/241 min at the upper end, with 15 and 240 expected valid.",
+          "passed": true,
+          "evidence": "BV-01 14/15/16 (15 valid), BV-02 239/240/241 (240 valid)."
+        },
+        {
+          "text": "The inclusivity of both ends is justified by the 06 text 'inclusive at both ends'.",
+          "passed": true,
+          "evidence": "BV-01/02 quote line 95 '15–240 minutes, inclusive at both ends.'"
+        },
+        {
+          "text": "A window whose window_end is at or before window_start is an invalid class, backed by the 'strictly after' text.",
+          "passed": true,
+          "evidence": "EP-04 'end not strictly after start' invalid, quoting the strictly-after text; outcome → U-02."
+        },
+        {
+          "text": "Every outcome on violation is either taken from 06 (422, TIME_WINDOW, TSD-4 §3) or marked unknown; no 400 or other status code is asserted.",
+          "passed": true,
+          "evidence": "Only outcome used: 422 / TIME_WINDOW / TSD-4 §3 quoted from 06 lines 24/188; otherwise null + unknown. No 400."
+        },
+        {
+          "text": "No state transition, status code or rule appears that 06 itself does not state (e.g. no 409, no submit/approve transitions from 02).",
+          "passed": true,
+          "evidence": "No transitions or 409; ST marked not_applicable."
+        },
+        {
+          "text": "The design stays on duration: no BV/EP for lead time, advance booking, curfew, overlap, weight bands or other rules.",
+          "passed": true,
+          "evidence": "Only duration BV/EP; other TIME_WINDOW checks appear only as U-04 (keep valid)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "library-loans-gaps",
+      "eval_name": "library-loans-gaps",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 220.0,
+        "tokens": 70158,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+          "passed": true,
+          "evidence": "check-design.mjs: OK — BV 9 (27 values), EP 17, ST 4×5 = 20 cells, unknowns 16."
+        },
+        {
+          "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+          "passed": true,
+          "evidence": "Verbatim quotes on all items (checker-verified)."
+        },
+        {
+          "text": "The inclusivity of 'between 1 and 3 books' is recorded as unknown rather than assumed.",
+          "passed": true,
+          "evidence": "BV-02 '1 book' and BV-03 '3 books' expected unknown → U-02."
+        },
+        {
+          "text": "The 0.50 EUR vs 1 EUR daily fine is reported as a conflict that cites both passages.",
+          "passed": true,
+          "evidence": "U-09 kind conflict: line 11 '0.50 EUR per day' vs line 26 '1 EUR per day'."
+        },
+        {
+          "text": "The reservation-expiry transition's target state is recorded as unknown; no state such as EXPIRED or CANCELLED is invented.",
+          "passed": true,
+          "evidence": "U-08: no state fits an expired reservation; no new state invented."
+        },
+        {
+          "text": "State × action pairs the spec does not list are unknown, not illegal (the spec has no blanket rule).",
+          "passed": true,
+          "evidence": "16 unlisted cells are unknown (U-13), 4 legal."
+        },
+        {
+          "text": "No error codes, messages or system responses are invented; outcomes the spec does not state are null or unknown.",
+          "passed": true,
+          "evidence": "Outcomes only restate spec text ('member cannot borrow', cap 10 EUR); refusal mechanics → U-12."
+        },
+        {
+          "text": "Boundary triples exist for the 'at most 5 books' limit (4/5/6) and the 'fines over 5 EUR' threshold.",
+          "passed": true,
+          "evidence": "BV-01 4/5/6 books; BV-09 4.50/5.00/5.50 EUR."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "lifecycle-02-full-matrix",
+      "eval_name": "lifecycle-02-full-matrix",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 236.0,
+        "tokens": 73293,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+          "passed": true,
+          "evidence": "check-design.mjs: OK — BV 1 (3 values), EP 18, ST 7×7 = 49 cells, unknowns 12."
+        },
+        {
+          "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+          "passed": true,
+          "evidence": "Every BV/EP/state/action/cell has verbatim quotes (checker-verified)."
+        },
+        {
+          "text": "All seven states are listed: DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, COMPLETED.",
+          "passed": true,
+          "evidence": "States: DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, COMPLETED."
+        },
+        {
+          "text": "The actions include submit, approve, reject, complete and cancel.",
+          "passed": true,
+          "evidence": "Actions submit, approve, reject, complete, cancel + 2 events."
+        },
+        {
+          "text": "The ST matrix has exactly one entry for every state × action pair.",
+          "passed": true,
+          "evidence": "49 cells = 7 × 7, no duplicates (checker)."
+        },
+        {
+          "text": "Pairs not listed in 02 are marked illegal with outcome 409 citing the 'any (from, action) pair not listed here is illegal' text — not left unknown.",
+          "passed": true,
+          "evidence": "39 illegal cells quote the 'Any (from, action) pair not listed here is illegal and must return 409' rule."
+        },
+        {
+          "text": "APPROVED × cancel is legal under the 'up to 2 hours before window_start' guard, and the 2-hour deadline has a boundary triple.",
+          "passed": true,
+          "evidence": "APPROVED × cancel legal with the 2-hour guard; BV-01 triple 1 h / 2 h / 3 h (coarse: 1-hour step)."
+        },
+        {
+          "text": "Every action from REJECTED, CANCELLED and COMPLETED is illegal (409).",
+          "passed": true,
+          "evidence": "All actions from REJECTED, CANCELLED, COMPLETED are illegal / 409."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "duration-focus-06",
+      "eval_name": "duration-focus-06",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 6,
+        "failed": 2,
+        "total": 8,
+        "time_seconds": 78.5,
+        "tokens": 49695,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+          "passed": false,
+          "evidence": "Markdown file test-design-duration.md, no .design.json."
+        },
+        {
+          "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+          "passed": false,
+          "evidence": "EP-6 (midnight UTC) is marked 'виведено, прямо не сказано' with no quote; multi-day class likewise."
+        },
+        {
+          "text": "Boundary values are 14/15/16 min at the lower end and 239/240/241 min at the upper end, with 15 and 240 expected valid.",
+          "passed": true,
+          "evidence": "BV 14/15/16 and 239/240/241, 15 and 240 valid."
+        },
+        {
+          "text": "The inclusivity of both ends is justified by the 06 text 'inclusive at both ends'.",
+          "passed": true,
+          "evidence": "Quotes the line-95 Duration row including 'inclusive at both ends'."
+        },
+        {
+          "text": "A window whose window_end is at or before window_start is an invalid class, backed by the 'strictly after' text.",
+          "passed": true,
+          "evidence": "EP-4/EP-5 (zero, negative) invalid, citing 'strictly after'."
+        },
+        {
+          "text": "Every outcome on violation is either taken from 06 (422, TIME_WINDOW, TSD-4 §3) or marked unknown; no 400 or other status code is asserted.",
+          "passed": true,
+          "evidence": "422 / TIME_WINDOW / TSD-4 §3 from 06; 400 appears only as open question U-1."
+        },
+        {
+          "text": "No state transition, status code or rule appears that 06 itself does not state (e.g. no 409, no submit/approve transitions from 02).",
+          "passed": true,
+          "evidence": "No 02 transitions; gate-order cases use 06's evaluation-order text."
+        },
+        {
+          "text": "The design stays on duration: no BV/EP for lead time, advance booking, curfew, overlap, weight bands or other rules.",
+          "passed": true,
+          "evidence": "No BV/EP for other rules; two gate-order cases combine duration with PILOT/ZONE failures but don't design those rules."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "library-loans-gaps",
+      "eval_name": "library-loans-gaps",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.62,
+        "passed": 5,
+        "failed": 3,
+        "total": 8,
+        "time_seconds": 83.8,
+        "tokens": 44688,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+          "passed": false,
+          "evidence": "Markdown library-loans.test-design.md, no .design.json."
+        },
+        {
+          "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+          "passed": true,
+          "evidence": "Items carry «…» quotes from the spec; the few unmatched fragments are headings/ellipses."
+        },
+        {
+          "text": "The inclusivity of 'between 1 and 3 books' is recorded as unknown rather than assumed.",
+          "passed": false,
+          "evidence": "BV-2 expects '3-тя: ок' — assumes the upper bound is inclusive while U3 asks 'Включні межі?'."
+        },
+        {
+          "text": "The 0.50 EUR vs 1 EUR daily fine is reported as a conflict that cites both passages.",
+          "passed": true,
+          "evidence": "C1 / gap list: 0.50 vs 1 EUR per day reported as a contradiction citing both."
+        },
+        {
+          "text": "The reservation-expiry transition's target state is recorded as unknown; no state such as EXPIRED or CANCELLED is invented.",
+          "passed": true,
+          "evidence": "No EXPIRED state invented; U6/U8 ask what the final state is."
+        },
+        {
+          "text": "State × action pairs the spec does not list are unknown, not illegal (the spec has no blanket rule).",
+          "passed": false,
+          "evidence": "Matrix lists 13 'недозволених' (not allowed) combinations ST-N1…N13 — treats unlisted pairs as illegal; only the reaction is asked (U9)."
+        },
+        {
+          "text": "No error codes, messages or system responses are invented; outcomes the spec does not state are null or unknown.",
+          "passed": true,
+          "evidence": "Reaction to forbidden actions left open (U9); no codes invented. EP-7.2 'забрати не можна' is a mild inference."
+        },
+        {
+          "text": "Boundary triples exist for the 'at most 5 books' limit (4/5/6) and the 'fines over 5 EUR' threshold.",
+          "passed": true,
+          "evidence": "BV-1 4/5/6 books, fine threshold around 5 EUR."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "lifecycle-02-full-matrix",
+      "eval_name": "lifecycle-02-full-matrix",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 6,
+        "failed": 2,
+        "total": 8,
+        "time_seconds": 139.3,
+        "tokens": 54120,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+          "passed": false,
+          "evidence": "Markdown test-design.md, no .design.json."
+        },
+        {
+          "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+          "passed": false,
+          "evidence": "Many rows cite only a line number (e.g. '| L29 |') or are marked [виведено] with no quoted text."
+        },
+        {
+          "text": "All seven states are listed: DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, COMPLETED.",
+          "passed": true,
+          "evidence": "All seven states listed."
+        },
+        {
+          "text": "The actions include submit, approve, reject, complete and cancel.",
+          "passed": true,
+          "evidence": "submit, approve, reject, complete, cancel."
+        },
+        {
+          "text": "The ST matrix has exactly one entry for every state × action pair.",
+          "passed": true,
+          "evidence": "7 × 5 = 35 cells (automatic transitions listed separately)."
+        },
+        {
+          "text": "Pairs not listed in 02 are marked illegal with outcome 409 citing the 'any (from, action) pair not listed here is illegal' text — not left unknown.",
+          "passed": true,
+          "evidence": "27 illegal pairs → 409, citing L22–L23 blanket rule."
+        },
+        {
+          "text": "APPROVED × cancel is legal under the 'up to 2 hours before window_start' guard, and the 2-hour deadline has a boundary triple.",
+          "passed": true,
+          "evidence": "APPROVED cancel deadline BV at 121/120/119 min before window_start."
+        },
+        {
+          "text": "Every action from REJECTED, CANCELLED and COMPLETED is illegal (409).",
+          "passed": true,
+          "evidence": "REJECTED/CANCELLED/COMPLETED rows all 409."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 191.5667,
+        "stddev": 63.6095,
+        "min": 118.7,
+        "max": 236.0
+      },
+      "tokens": {
+        "mean": 68679.3333,
+        "stddev": 5504.0395,
+        "min": 62587,
+        "max": 73293
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.7067,
+        "stddev": 0.0751,
+        "min": 0.62,
+        "max": 0.75
+      },
+      "time_seconds": {
+        "mean": 100.5333,
+        "stddev": 33.6773,
+        "min": 78.5,
+        "max": 139.3
+      },
+      "tokens": {
+        "mean": 49501.0,
+        "stddev": 4718.9917,
+        "min": 44688,
+        "max": 54120
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.29",
+      "time_seconds": "+91.0",
+      "tokens": "+19178"
+    }
+  },
+  "notes": [
+    "The format assertion (json-passes-checker) favours the skill by construction — the baseline had no way to know the format. Without it: with_skill 21/21, baseline 17/21 (81%).",
+    "Discriminating content assertions: verbatim quotes on every item (baseline fails 2/3 — inferred items without quotes, line numbers only), 'between 1 and 3' assumed inclusive by baseline, and unlisted pairs treated as illegal by baseline where the spec has no blanket rule.",
+    "Baselines were strong on substance: all three found the main gaps (end ≤ start status, fine conflict, missing EXPIRED state) and marked their own inferences — the skill's edge is consistency and machine-checkable traceability, not insight.",
+    "Skill weakness 1 — BV step rule: 'step = unit the boundary is written in' gave a 1 h / 2 h / 3 h triple for the 2-hour cancel deadline (baseline: 119/120/121 min).",
+    "Skill weakness 2 — 'always three values' forces meaningless triples: duration BV-03 (−1/0/+1 min for strictly-after; +1 is invalid only because of the 15-min minimum) and library BV-04 age 11/12/13 all 'valid' (age selects a limit, it isn't valid/invalid).",
+    "Skill weakness 3 — SKILL.md lists 'up to' as a cue that settles inclusivity; the with_skill run therefore treated '2 hours before' as inclusive, while the baseline flagged it as ambiguous. The skill hard-codes an interpretation.",
+    "Cost: with_skill ~69k tokens / 190 s mean vs baseline ~50k / 100 s — the skill is ~40% more tokens and ~2× slower (exhaustive matrix, quote lookup, checker round)."
+  ]
+}

@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: weight-band-aircraft-gate
+expected_outcome: |
+  Cases assign the weight-band check to the AIRCRAFT gate (per 07), not ZONE, with rule_reference ZC-2026.1 §2. BV sits on the C0–C3 band thresholds in grams, earlier gates (PILOT) are pinned to pass, and the L1-only registration limit is handled honestly for zones that need L2/L3.

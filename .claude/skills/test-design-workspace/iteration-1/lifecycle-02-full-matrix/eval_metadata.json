@@ -1,0 +1,14 @@
+{
+  "eval_name": "lifecycle-02-full-matrix",
+  "prompt": "BV/EP/ST по specs/02-request-lifecycle.md",
+  "assertions": [
+    "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+    "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+    "All seven states are listed: DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, COMPLETED.",
+    "The actions include submit, approve, reject, complete and cancel.",
+    "The ST matrix has exactly one entry for every state × action pair.",
+    "Pairs not listed in 02 are marked illegal with outcome 409 citing the 'any (from, action) pair not listed here is illegal' text — not left unknown.",
+    "APPROVED × cancel is legal under the 'up to 2 hours before window_start' guard, and the 2-hour deadline has a boundary triple.",
+    "Every action from REJECTED, CANCELLED and COMPLETED is illegal (409)."
+  ]
+}

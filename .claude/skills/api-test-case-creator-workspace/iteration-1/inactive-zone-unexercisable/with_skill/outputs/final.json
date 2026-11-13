@@ -1,0 +1,1 @@
+{"status": "blocked", "case_id": "API-OP-004", "reason": "The ZONE inactive-zone rule (ZC-2026.1 §4) cannot be exercised through the documented API: 03 has only read endpoints for zones (GET /zones, GET /zones/{code}) with no create/update or active flag, and 06 §4 lists all six catalogue zones as active, so no baseline with an inactive zone can be built."}

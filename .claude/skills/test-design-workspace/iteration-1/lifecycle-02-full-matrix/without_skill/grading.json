@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+      "passed": false,
+      "evidence": "Markdown test-design.md, no .design.json."
+    },
+    {
+      "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+      "passed": false,
+      "evidence": "Many rows cite only a line number (e.g. '| L29 |') or are marked [виведено] with no quoted text."
+    },
+    {
+      "text": "All seven states are listed: DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, COMPLETED.",
+      "passed": true,
+      "evidence": "All seven states listed."
+    },
+    {
+      "text": "The actions include submit, approve, reject, complete and cancel.",
+      "passed": true,
+      "evidence": "submit, approve, reject, complete, cancel."
+    },
+    {
+      "text": "The ST matrix has exactly one entry for every state × action pair.",
+      "passed": true,
+      "evidence": "7 × 5 = 35 cells (automatic transitions listed separately)."
+    },
+    {
+      "text": "Pairs not listed in 02 are marked illegal with outcome 409 citing the 'any (from, action) pair not listed here is illegal' text — not left unknown.",
+      "passed": true,
+      "evidence": "27 illegal pairs → 409, citing L22–L23 blanket rule."
+    },
+    {
+      "text": "APPROVED × cancel is legal under the 'up to 2 hours before window_start' guard, and the 2-hour deadline has a boundary triple.",
+      "passed": true,
+      "evidence": "APPROVED cancel deadline BV at 121/120/119 min before window_start."
+    },
+    {
+      "text": "Every action from REJECTED, CANCELLED and COMPLETED is illegal (409).",
+      "passed": true,
+      "evidence": "REJECTED/CANCELLED/COMPLETED rows all 409."
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 2,
+    "total": 8,
+    "pass_rate": 0.75
+  },
+  "timing": {
+    "executor_duration_seconds": 139.3,
+    "total_duration_seconds": 139.3
+  }
+}

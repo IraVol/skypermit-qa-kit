@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "Every expected 422 names failing_gate TIME_WINDOW and rule_reference exactly `TSD-4 §3` (never the illustrative `TSD-4 §3.2`).",
+      "passed": true,
+      "evidence": "All duration 422s use TIME_WINDOW / `TSD-4 §3`. One extra gate-order case (.10) expects PILOT / OH-1 §2.3 — different rule, not counted against."
+    },
+    {
+      "text": "Boundary cases cover both ends of the range one minute apart: 14 min and 15 min on the lower end, 240 min and 241 min on the upper end.",
+      "passed": true,
+      "evidence": "BV .1–.6 = 14, 15, 16, 239, 240, 241 min."
+    },
+    {
+      "text": "The at-limit durations 15 min and 240 min are expected to pass TIME_WINDOW (the range is inclusive per 06 §1.4).",
+      "passed": true,
+      "evidence": "15 and 240 min expect 200 on validate."
+    },
+    {
+      "text": "At least one state-transition chain submits a request that failed on duration and then expects 409 when it is submitted again from REJECTED.",
+      "passed": true,
+      "evidence": ".12: submit 241 min → 422, REJECTED, second submit → 409."
+    },
+    {
+      "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+      "passed": true,
+      "evidence": "Operator steps use session; reviewer case .11 uses X-Reviewer-Id only (line 298). No operator_id."
+    },
+    {
+      "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+      "passed": true,
+      "evidence": "No exact message asserted."
+    },
+    {
+      "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+      "passed": true,
+      "evidence": "No dates/emails/UUIDs; window_start = now + 24 h."
+    },
+    {
+      "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+      "passed": false,
+      "evidence": "Lines 62, 89, 116, 143, 197 assert body `ok` = `true` on validate — field not defined in 01/03."
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 1,
+    "total": 8,
+    "pass_rate": 0.88
+  },
+  "timing": {
+    "executor_duration_seconds": 94.0,
+    "total_duration_seconds": 94.0
+  }
+}

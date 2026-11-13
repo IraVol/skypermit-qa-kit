@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: inactive-zone-unexercisable
+expected_outcome: |
+  The skill notices that every catalogue zone is active and the API has no zone create/update endpoint, so the rule cannot be exercised through the API; it returns blocked (or only writes cases whose preconditions openly require out-of-band data) instead of inventing an endpoint, and flags that the ZC-2026.1 §4 citation is not fully confirmed.

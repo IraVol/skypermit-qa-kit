@@ -1,0 +1,400 @@
+{
+  "spec": [".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md"],
+  "focus": null,
+  "boundary_values": [
+    {
+      "id": "BV-01",
+      "parameter": "books on loan at a time (any member)",
+      "boundary": "5 books (upper)",
+      "inclusive": true,
+      "step": "1 book",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "at most 5 books on loan at a time"}],
+      "values": [
+        {"position": "boundary-1", "value": "4 books", "expected": "valid", "outcome": null},
+        {"position": "boundary", "value": "5 books", "expected": "valid", "outcome": null},
+        {"position": "boundary+1", "value": "6 books", "expected": "invalid", "outcome": null, "unknown": "U-01"}
+      ]
+    },
+    {
+      "id": "BV-02",
+      "parameter": "books borrowed by a member under 12",
+      "boundary": "1 book (lower)",
+      "inclusive": "unknown",
+      "step": "1 book",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "Members under 12 years old may borrow between 1 and 3 books."}],
+      "values": [
+        {"position": "boundary-1", "value": "0 books", "expected": "invalid", "outcome": null, "unknown": "U-04"},
+        {"position": "boundary", "value": "1 book", "expected": "unknown", "outcome": null, "unknown": "U-02"},
+        {"position": "boundary+1", "value": "2 books", "expected": "valid", "outcome": null}
+      ]
+    },
+    {
+      "id": "BV-03",
+      "parameter": "books borrowed by a member under 12",
+      "boundary": "3 books (upper)",
+      "inclusive": "unknown",
+      "step": "1 book",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "Members under 12 years old may borrow between 1 and 3 books."}],
+      "values": [
+        {"position": "boundary-1", "value": "2 books", "expected": "valid", "outcome": null},
+        {"position": "boundary", "value": "3 books", "expected": "unknown", "outcome": null, "unknown": "U-02"},
+        {"position": "boundary+1", "value": "4 books", "expected": "invalid", "outcome": null, "unknown": "U-04"}
+      ]
+    },
+    {
+      "id": "BV-04",
+      "parameter": "member age (selects which borrowing limit applies)",
+      "boundary": "12 years (\"under 12\" is strict: 12 is not under 12)",
+      "inclusive": false,
+      "step": "1 year",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "Members under 12 years old"}],
+      "values": [
+        {"position": "boundary-1", "value": "11 years", "expected": "valid", "outcome": "under-12 limit applies: between 1 and 3 books",
+         "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "Members under 12 years old may borrow between 1 and 3 books."}]},
+        {"position": "boundary", "value": "12 years", "expected": "valid", "outcome": "general limit applies: at most 5 books",
+         "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "A member may have at most 5 books on loan at a time."}]},
+        {"position": "boundary+1", "value": "13 years", "expected": "valid", "outcome": "general limit applies: at most 5 books",
+         "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "A member may have at most 5 books on loan at a time."}]}
+      ]
+    },
+    {
+      "id": "BV-05",
+      "parameter": "number of renewals of one loan",
+      "boundary": "2 renewals (upper)",
+      "inclusive": true,
+      "step": "1 renewal",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "A loan can be renewed up to 2 times."}],
+      "values": [
+        {"position": "boundary-1", "value": "1st renewal", "expected": "valid", "outcome": null},
+        {"position": "boundary", "value": "2nd renewal", "expected": "valid", "outcome": null},
+        {"position": "boundary+1", "value": "3rd renewal", "expected": "invalid", "outcome": null, "unknown": "U-05"}
+      ]
+    },
+    {
+      "id": "BV-06",
+      "parameter": "days elapsed in the loan period (valid = still within the period, loan stays ACTIVE)",
+      "boundary": "14 days (end of loan period)",
+      "inclusive": "unknown",
+      "step": "1 day",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "Loan period is 14 days."}],
+      "values": [
+        {"position": "boundary-1", "value": "13 days", "expected": "valid", "outcome": null},
+        {"position": "boundary", "value": "14 days", "expected": "unknown", "outcome": null, "unknown": "U-07"},
+        {"position": "boundary+1", "value": "15 days", "expected": "invalid", "outcome": "loan moves ACTIVE → OVERDUE automatically",
+         "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 20, "text": "ACTIVE → OVERDUE automatically when the loan period ends."}]}
+      ]
+    },
+    {
+      "id": "BV-07",
+      "parameter": "age of a reservation (valid = still RESERVED, can be picked up)",
+      "boundary": "3 days (reservation expiry)",
+      "inclusive": "unknown",
+      "step": "1 day",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 22, "text": "A reservation expires after 3 days."}],
+      "values": [
+        {"position": "boundary-1", "value": "2 days", "expected": "valid", "outcome": null},
+        {"position": "boundary", "value": "3 days", "expected": "unknown", "outcome": null, "unknown": "U-08"},
+        {"position": "boundary+1", "value": "4 days", "expected": "invalid", "outcome": null, "unknown": "U-08"}
+      ]
+    },
+    {
+      "id": "BV-08",
+      "parameter": "accrued overdue fine for a loan",
+      "boundary": "10 EUR (cap)",
+      "inclusive": true,
+      "step": "0.50 EUR (per-day increment of line 11; line 26 says 1 EUR — see U-09)",
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 11, "text": "capped at 10 EUR"},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 11, "text": "0.50 EUR per day overdue"}
+      ],
+      "values": [
+        {"position": "boundary-1", "value": "9.50 EUR", "expected": "valid", "outcome": null},
+        {"position": "boundary", "value": "10.00 EUR", "expected": "valid", "outcome": null},
+        {"position": "boundary+1", "value": "10.50 EUR", "expected": "invalid", "outcome": "fine stays at 10 EUR (cap)",
+         "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 11, "text": "capped at 10 EUR"}]}
+      ]
+    },
+    {
+      "id": "BV-09",
+      "parameter": "member's fines (valid = member may still borrow)",
+      "boundary": "5 EUR (\"over 5 EUR\" is strict: 5.00 EUR still may borrow)",
+      "inclusive": true,
+      "step": "0.50 EUR (per-day increment of line 11; line 26 says 1 EUR — see U-09)",
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 12, "text": "Members with fines over 5 EUR cannot borrow."},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 11, "text": "0.50 EUR per day overdue"}
+      ],
+      "values": [
+        {"position": "boundary-1", "value": "4.50 EUR", "expected": "valid", "outcome": null},
+        {"position": "boundary", "value": "5.00 EUR", "expected": "valid", "outcome": null},
+        {"position": "boundary+1", "value": "5.50 EUR", "expected": "invalid", "outcome": "member cannot borrow (how the refusal surfaces: U-12)",
+         "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 12, "text": "fines over 5 EUR cannot borrow"}]}
+      ]
+    }
+  ],
+  "equivalence_classes": [
+    {
+      "id": "EP-01", "parameter": "books on loan at a time (any member)", "class": "0–5 books", "valid": true,
+      "representative": "3 books", "outcome": null,
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "at most 5 books on loan at a time"}]
+    },
+    {
+      "id": "EP-02", "parameter": "books on loan at a time (any member)", "class": "more than 5 books", "valid": false,
+      "representative": "7 books", "outcome": null, "unknown": "U-01",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "at most 5 books on loan at a time"}]
+    },
+    {
+      "id": "EP-03", "parameter": "books borrowed by a member under 12", "class": "between 1 and 3 books", "valid": true,
+      "representative": "2 books", "outcome": null,
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "Members under 12 years old may borrow between 1 and 3 books."}]
+    },
+    {
+      "id": "EP-04", "parameter": "books borrowed by a member under 12", "class": "below 1 book", "valid": false,
+      "representative": "0 books", "outcome": null, "unknown": "U-04",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "between 1 and 3 books"}]
+    },
+    {
+      "id": "EP-05", "parameter": "books borrowed by a member under 12", "class": "above 3 books", "valid": false,
+      "representative": "4 books", "outcome": null, "unknown": "U-04",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "between 1 and 3 books"}]
+    },
+    {
+      "id": "EP-06", "parameter": "member age", "class": "under 12 years", "valid": true,
+      "representative": "8 years", "outcome": "under-12 limit applies: between 1 and 3 books",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "Members under 12 years old may borrow between 1 and 3 books."}]
+    },
+    {
+      "id": "EP-07", "parameter": "member age", "class": "12 years or older", "valid": true,
+      "representative": "30 years", "outcome": "general limit applies: at most 5 books",
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "A member may have at most 5 books on loan at a time."},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "Members under 12 years old"}
+      ]
+    },
+    {
+      "id": "EP-08", "parameter": "number of renewals of one loan", "class": "up to 2 renewals", "valid": true,
+      "representative": "1 renewal", "outcome": null,
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "A loan can be renewed up to 2 times."}]
+    },
+    {
+      "id": "EP-09", "parameter": "number of renewals of one loan", "class": "more than 2 renewals", "valid": false,
+      "representative": "4th renewal", "outcome": null, "unknown": "U-05",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "A loan can be renewed up to 2 times."}]
+    },
+    {
+      "id": "EP-10", "parameter": "days elapsed in the loan period", "class": "within the 14-day loan period", "valid": true,
+      "representative": "7 days", "outcome": null,
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "Loan period is 14 days."}]
+    },
+    {
+      "id": "EP-11", "parameter": "days elapsed in the loan period", "class": "loan period has ended", "valid": false,
+      "representative": "20 days", "outcome": "loan moves ACTIVE → OVERDUE automatically",
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "Loan period is 14 days."},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 20, "text": "ACTIVE → OVERDUE automatically when the loan period ends."}
+      ]
+    },
+    {
+      "id": "EP-12", "parameter": "age of a reservation", "class": "not yet expired (within 3 days)", "valid": true,
+      "representative": "1 day", "outcome": null,
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 22, "text": "A reservation expires after 3 days."}]
+    },
+    {
+      "id": "EP-13", "parameter": "age of a reservation", "class": "expired (after 3 days)", "valid": false,
+      "representative": "5 days", "outcome": null, "unknown": "U-08",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 22, "text": "A reservation expires after 3 days."}]
+    },
+    {
+      "id": "EP-14", "parameter": "accrued overdue fine for a loan", "class": "below the cap (per-day accrual)", "valid": true,
+      "representative": "6 days overdue", "outcome": null, "unknown": "U-09",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 11, "text": "Fine is 0.50 EUR per day overdue"}]
+    },
+    {
+      "id": "EP-15", "parameter": "accrued overdue fine for a loan", "class": "per-day accrual would exceed the cap", "valid": true,
+      "representative": "40 days overdue", "outcome": "fine is 10 EUR (cap reached under either rate in U-09)",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 11, "text": "capped at 10 EUR"}]
+    },
+    {
+      "id": "EP-16", "parameter": "member's fines", "class": "5 EUR or less", "valid": true,
+      "representative": "2.50 EUR", "outcome": null,
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 12, "text": "Members with fines over 5 EUR cannot borrow."}]
+    },
+    {
+      "id": "EP-17", "parameter": "member's fines", "class": "over 5 EUR", "valid": false,
+      "representative": "7.50 EUR", "outcome": "member cannot borrow (how the refusal surfaces: U-12)",
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 12, "text": "Members with fines over 5 EUR cannot borrow."}]
+    }
+  ],
+  "state_transitions": {
+    "states": [
+      {"name": "RESERVED", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 16, "text": "A loan is RESERVED, ACTIVE, OVERDUE or RETURNED."}]},
+      {"name": "ACTIVE", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 16, "text": "A loan is RESERVED, ACTIVE, OVERDUE or RETURNED."}]},
+      {"name": "OVERDUE", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 16, "text": "A loan is RESERVED, ACTIVE, OVERDUE or RETURNED."}]},
+      {"name": "RETURNED", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 16, "text": "A loan is RESERVED, ACTIVE, OVERDUE or RETURNED."}]}
+    ],
+    "actions": [
+      {"name": "pick up", "kind": "action", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 18, "text": "when the book is picked up"}]},
+      {"name": "return", "kind": "action", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 19, "text": "when the book is returned"}]},
+      {"name": "renew", "kind": "action", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "A loan can be renewed up to 2 times."}]},
+      {"name": "loan period ends", "kind": "event", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 20, "text": "automatically when the loan period ends"}]},
+      {"name": "reservation expires", "kind": "event", "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 22, "text": "A reservation expires after 3 days."}]}
+    ],
+    "matrix": [
+      {"id": "ST-01", "from": "RESERVED", "action": "pick up", "result": "legal", "to": "ACTIVE", "guard": null, "outcome": null,
+       "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 18, "text": "RESERVED → ACTIVE when the book is picked up."}]},
+      {"id": "ST-02", "from": "RESERVED", "action": "return", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-03", "from": "RESERVED", "action": "renew", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-06", "quotes": []},
+      {"id": "ST-04", "from": "RESERVED", "action": "loan period ends", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-05", "from": "RESERVED", "action": "reservation expires", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-08",
+       "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 22, "text": "A reservation expires after 3 days."}]},
+      {"id": "ST-06", "from": "ACTIVE", "action": "pick up", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-07", "from": "ACTIVE", "action": "return", "result": "legal", "to": "RETURNED", "guard": null, "outcome": null,
+       "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 19, "text": "ACTIVE → RETURNED when the book is returned."}]},
+      {"id": "ST-08", "from": "ACTIVE", "action": "renew", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-06",
+       "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "A loan can be renewed up to 2 times."}]},
+      {"id": "ST-09", "from": "ACTIVE", "action": "loan period ends", "result": "legal", "to": "OVERDUE", "guard": null, "outcome": null,
+       "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 20, "text": "ACTIVE → OVERDUE automatically when the loan period ends."}]},
+      {"id": "ST-10", "from": "ACTIVE", "action": "reservation expires", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-11", "from": "OVERDUE", "action": "pick up", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-12", "from": "OVERDUE", "action": "return", "result": "legal", "to": "RETURNED", "guard": null, "outcome": null,
+       "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 21, "text": "OVERDUE → RETURNED when the book is returned."}]},
+      {"id": "ST-13", "from": "OVERDUE", "action": "renew", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-06", "quotes": []},
+      {"id": "ST-14", "from": "OVERDUE", "action": "loan period ends", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-15", "from": "OVERDUE", "action": "reservation expires", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-16", "from": "RETURNED", "action": "pick up", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-17", "from": "RETURNED", "action": "return", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-18", "from": "RETURNED", "action": "renew", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-06", "quotes": []},
+      {"id": "ST-19", "from": "RETURNED", "action": "loan period ends", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []},
+      {"id": "ST-20", "from": "RETURNED", "action": "reservation expires", "result": "unknown", "to": null, "guard": null, "outcome": null, "unknown": "U-13", "quotes": []}
+    ]
+  },
+  "unknowns": [
+    {
+      "id": "U-01", "kind": "gap",
+      "question": "What happens when borrowing would take a member above 5 books on loan (refused? with what message/code)?",
+      "why_it_matters": "BV-01 (6 books) and EP-02 can only assert 'invalid', not the observable result.",
+      "affects": ["BV-01", "EP-02"],
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "at most 5 books on loan at a time"}]
+    },
+    {
+      "id": "U-02", "kind": "gap",
+      "question": "Is \"between 1 and 3 books\" inclusive at both ends — may an under-12 member borrow exactly 1 and exactly 3 books?",
+      "why_it_matters": "The boundary values of BV-02 (1 book) and BV-03 (3 books) cannot be marked valid or invalid.",
+      "affects": ["BV-02", "BV-03"],
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "between 1 and 3 books"}]
+    },
+    {
+      "id": "U-03", "kind": "gap",
+      "question": "For under-12 members, does \"between 1 and 3 books\" count books on loan at a time (like the 5-book rule) or books per single borrowing? And what does the lower bound 1 restrict in practice?",
+      "why_it_matters": "Decides how BV-02/BV-03 and EP-03..EP-05 are set up (existing loans + new borrow vs. one transaction).",
+      "affects": ["BV-02", "BV-03", "EP-03", "EP-04", "EP-05"],
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "may borrow between 1 and 3 books"},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "on loan at a time"}
+      ]
+    },
+    {
+      "id": "U-04", "kind": "gap",
+      "question": "What happens when an under-12 member goes outside 1–3 books (0 books, or a 4th book)?",
+      "why_it_matters": "BV-02 (0), BV-03 (4) and EP-04/EP-05 can only assert 'invalid', not the result.",
+      "affects": ["BV-02", "BV-03", "EP-04", "EP-05"],
+      "quotes": []
+    },
+    {
+      "id": "U-05", "kind": "gap",
+      "question": "What happens on a 3rd (or later) renewal attempt?",
+      "why_it_matters": "BV-05 (3rd renewal) and EP-09 can only assert 'invalid', not the result.",
+      "affects": ["BV-05", "EP-09"],
+      "quotes": []
+    },
+    {
+      "id": "U-06", "kind": "gap",
+      "question": "In which states can a loan be renewed (ACTIVE only? OVERDUE too?), what state results, and what does a renewal do to the loan period (another 14 days, from when)?",
+      "why_it_matters": "All renew cells of the ST matrix are unknown; the renewal effect also shifts the BV-06 boundary for renewed loans.",
+      "affects": ["ST-03", "ST-08", "ST-13", "ST-18", "BV-06"],
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "A loan can be renewed up to 2 times."}]
+    },
+    {
+      "id": "U-07", "kind": "gap",
+      "question": "When does the 14-day loan period start (pick-up?) and exactly when does it end — is the loan still ACTIVE on day 14 and OVERDUE from day 15, or OVERDUE at the start of day 14?",
+      "why_it_matters": "BV-06 boundary value (day 14) cannot be marked; also decides when fines start accruing.",
+      "affects": ["BV-06", "EP-10", "EP-11", "ST-09"],
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 6, "text": "Loan period is 14 days."},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 20, "text": "when the loan period ends"}
+      ]
+    },
+    {
+      "id": "U-08", "kind": "gap",
+      "question": "When a reservation expires, what state does the loan go to (none of RESERVED/ACTIVE/OVERDUE/RETURNED fits), counted from when, and is it still RESERVED at exactly 3 days?",
+      "why_it_matters": "ST-05 has no target state; BV-07 boundary (3 days) and the expired values (BV-07 4 days, EP-13) have no defined result.",
+      "affects": ["ST-05", "BV-07", "EP-13"],
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 22, "text": "A reservation expires after 3 days."},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 16, "text": "A loan is RESERVED, ACTIVE, OVERDUE or RETURNED."}
+      ]
+    },
+    {
+      "id": "U-09", "kind": "conflict",
+      "question": "Is the overdue fine 0.50 EUR per day (Fines section) or 1 EUR per day (Notes for the front desk)?",
+      "why_it_matters": "Expected fine for any number of overdue days below the cap (EP-14), the day the 10 EUR cap is reached (day 20 vs day 10), the day a member crosses 5 EUR and is blocked from borrowing, and the 0.50 EUR step used in BV-08/BV-09.",
+      "affects": ["EP-14", "BV-08", "BV-09", "EP-17"],
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 11, "text": "Fine is 0.50 EUR per day overdue"},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 26, "text": "Overdue fine: 1 EUR per day."}
+      ]
+    },
+    {
+      "id": "U-10", "kind": "gap",
+      "question": "Is the 10 EUR cap per loan or per member (total across all overdue loans)?",
+      "why_it_matters": "With several overdue loans, BV-08/EP-15 give different expected totals.",
+      "affects": ["BV-08", "EP-15"],
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 11, "text": "capped at 10 EUR"}]
+    },
+    {
+      "id": "U-11", "kind": "gap",
+      "question": "Does \"fines over 5 EUR\" mean the member's total outstanding fines across loans, or any single loan's fine? Do paid fines still count?",
+      "why_it_matters": "Decides how the member is set up for BV-09 and EP-16/EP-17.",
+      "affects": ["BV-09", "EP-16", "EP-17"],
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 12, "text": "Members with fines over 5 EUR cannot borrow."}]
+    },
+    {
+      "id": "U-12", "kind": "gap",
+      "question": "How is a blocked borrow (fines over 5 EUR) reported — which message, code or screen?",
+      "why_it_matters": "BV-09 (5.50 EUR) and EP-17 know the borrow is refused but cannot assert the response.",
+      "affects": ["BV-09", "EP-17"],
+      "quotes": []
+    },
+    {
+      "id": "U-13", "kind": "gap",
+      "question": "State/action pairs not listed in 'Loan states' (e.g. returning a RESERVED loan, picking up an ACTIVE one, anything on RETURNED): are they illegal, and what happens? The spec has no blanket rule and doesn't say RETURNED is final.",
+      "why_it_matters": "11 of 20 ST cells are unknown here (16 unknown in total with U-06 and U-08); negative state-transition tests have no expected result.",
+      "affects": ["ST-02", "ST-04", "ST-06", "ST-10", "ST-11", "ST-14", "ST-15", "ST-16", "ST-17", "ST-19", "ST-20"],
+      "quotes": []
+    },
+    {
+      "id": "U-14", "kind": "gap",
+      "question": "How does a loan come into existence — does every borrow start as RESERVED, or can a member borrow straight into ACTIVE? Is 'borrow' the same as 'pick up'?",
+      "why_it_matters": "The borrowing limits (BV-01..BV-05, BV-09) are worded as 'borrow' but no transition says which action that is, so the limit checks cannot be tied to a state transition.",
+      "affects": ["BV-01", "BV-02", "BV-03", "BV-09", "ST-01"],
+      "quotes": [
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 12, "text": "cannot borrow"},
+        {"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 18, "text": "RESERVED → ACTIVE when the book is picked up."}
+      ]
+    },
+    {
+      "id": "U-15", "kind": "gap",
+      "question": "Do RESERVED (not yet picked up) and OVERDUE loans count toward the 5-book / 1–3-book limits?",
+      "why_it_matters": "Changes the count used in BV-01..BV-03 when a member has reservations or overdue books.",
+      "affects": ["BV-01", "BV-02", "BV-03", "EP-01", "EP-02"],
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 5, "text": "at most 5 books on loan at a time"}]
+    },
+    {
+      "id": "U-16", "kind": "gap",
+      "question": "How is a member's age determined (date of birth? on which date — borrow date?), and what happens if it is missing or malformed?",
+      "why_it_matters": "BV-04 (11/12/13 years) needs to know at which moment the age is evaluated, e.g. a member turning 12 during a loan.",
+      "affects": ["BV-04", "EP-06", "EP-07"],
+      "quotes": [{"file": ".claude/skills/test-design-workspace/iteration-1/library-loans-gaps/input/library-loans.md", "line": 7, "text": "Members under 12 years old"}]
+    }
+  ]
+}

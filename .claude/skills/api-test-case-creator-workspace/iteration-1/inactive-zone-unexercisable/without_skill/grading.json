@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "No step calls an undocumented endpoint to create, update or deactivate a zone (no POST/PUT/PATCH/DELETE on /zones).",
+      "passed": true,
+      "evidence": "No POST/PUT/PATCH/DELETE on /zones; the inactive zone is a DB insert precondition."
+    },
+    {
+      "text": "The run either returns blocked, or every written case states that the inactive zone must already exist as out-of-band data because all catalogue zones are active and the API cannot change them.",
+      "passed": true,
+      "evidence": "Header states all six seeded zones are active and the fixture must be inserted out of band; .1–.3 marked BLOCKED."
+    },
+    {
+      "text": "The output says that the `ZC-2026.1 §4` citation is not yet fully confirmed (per 05/07).",
+      "passed": true,
+      "evidence": "Line 9: 'Citation is not confirmed. 05 row 5 and 07 §4'."
+    },
+    {
+      "text": "No case treats one of the six catalogue zones (KBP-CTR-3, ODS-CTR-5, LVV-RST-2, ZTM-RST-7, DNI-OPN-1, KHR-OPN-4) as inactive.",
+      "passed": true,
+      "evidence": "Proposes a new row TST-INA-1; DNI-OPN-1 used only as the active control."
+    },
+    {
+      "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+      "passed": true,
+      "evidence": "Operator session only; no operator_id."
+    },
+    {
+      "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+      "passed": true,
+      "evidence": "No exact message asserted."
+    },
+    {
+      "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+      "passed": true,
+      "evidence": "No dates/emails/UUIDs."
+    },
+    {
+      "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+      "passed": false,
+      "evidence": "Line 120 asserts body `ok` = `true`. Also justifies expectations from app code (zone-gate.ts, seed.sql) — sources CLAUDE.md excludes."
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 1,
+    "total": 8,
+    "pass_rate": 0.88
+  },
+  "timing": {
+    "executor_duration_seconds": 70.4,
+    "total_duration_seconds": 70.4
+  }
+}

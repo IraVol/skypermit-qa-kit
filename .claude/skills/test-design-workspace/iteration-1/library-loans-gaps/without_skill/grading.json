@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "The result is a single <name>.design.json file that `node .claude/skills/test-design/scripts/check-design.mjs` reports as OK.",
+      "passed": false,
+      "evidence": "Markdown library-loans.test-design.md, no .design.json."
+    },
+    {
+      "text": "Every boundary, class, state, action and transition in the design carries text copied verbatim from the spec file.",
+      "passed": true,
+      "evidence": "Items carry «…» quotes from the spec; the few unmatched fragments are headings/ellipses."
+    },
+    {
+      "text": "The inclusivity of 'between 1 and 3 books' is recorded as unknown rather than assumed.",
+      "passed": false,
+      "evidence": "BV-2 expects '3-тя: ок' — assumes the upper bound is inclusive while U3 asks 'Включні межі?'."
+    },
+    {
+      "text": "The 0.50 EUR vs 1 EUR daily fine is reported as a conflict that cites both passages.",
+      "passed": true,
+      "evidence": "C1 / gap list: 0.50 vs 1 EUR per day reported as a contradiction citing both."
+    },
+    {
+      "text": "The reservation-expiry transition's target state is recorded as unknown; no state such as EXPIRED or CANCELLED is invented.",
+      "passed": true,
+      "evidence": "No EXPIRED state invented; U6/U8 ask what the final state is."
+    },
+    {
+      "text": "State × action pairs the spec does not list are unknown, not illegal (the spec has no blanket rule).",
+      "passed": false,
+      "evidence": "Matrix lists 13 'недозволених' (not allowed) combinations ST-N1…N13 — treats unlisted pairs as illegal; only the reaction is asked (U9)."
+    },
+    {
+      "text": "No error codes, messages or system responses are invented; outcomes the spec does not state are null or unknown.",
+      "passed": true,
+      "evidence": "Reaction to forbidden actions left open (U9); no codes invented. EP-7.2 'забрати не можна' is a mild inference."
+    },
+    {
+      "text": "Boundary triples exist for the 'at most 5 books' limit (4/5/6) and the 'fines over 5 EUR' threshold.",
+      "passed": true,
+      "evidence": "BV-1 4/5/6 books, fine threshold around 5 EUR."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 3,
+    "total": 8,
+    "pass_rate": 0.62
+  },
+  "timing": {
+    "executor_duration_seconds": 83.8,
+    "total_duration_seconds": 83.8
+  }
+}

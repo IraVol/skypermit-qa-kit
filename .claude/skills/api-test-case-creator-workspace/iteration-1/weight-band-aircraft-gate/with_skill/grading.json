@@ -1,0 +1,54 @@
+{
+  "expectations": [
+    {
+      "text": "Every expected 422 for the weight-band rule names failing_gate AIRCRAFT (not ZONE) with rule_reference `ZC-2026.1 §2`.",
+      "passed": true,
+      "evidence": "All 7 expected 422s: AIRCRAFT / `ZC-2026.1 §2`; ZONE never used."
+    },
+    {
+      "text": "Boundary cases use a band threshold from 06 §3 in grams (900/901, 3500/3501 or 12000/12001), one gram apart.",
+      "passed": true,
+      "evidence": "Triples 899/900/901, 3499/3500/3501, 11999/12000/12001 g."
+    },
+    {
+      "text": "Preconditions pin PILOT to pass for the chosen zone: the pilot rating covers that zone's class (CONTROLLED needs R_ADVANCED or R_BVLOS, RESTRICTED needs R_BVLOS) and certification is current.",
+      "passed": true,
+      "evidence": "RESTRICTED zones use R_BVLOS (13), CONTROLLED KBP-CTR-3 uses R_ADVANCED (7); certification current."
+    },
+    {
+      "text": "No case expects a self-registered (L1) operator to pass validate/submit in a zone that requires L2 or L3; such cases either state the higher level as pre-existing out-of-band data, or are skipped with a reason.",
+      "passed": true,
+      "evidence": "Pass-side cases require an L3/L2 operator 'that has to exist already… signed in via POST /auth/login' (line 12); fail-side uses L1 since AIRCRAFT runs before ZONE."
+    },
+    {
+      "text": "Every HTTP step names exactly one auth (operator session, X-Reviewer-Id or none); no operator step sends X-Reviewer-Id and no step sends operator_id in the body.",
+      "passed": true,
+      "evidence": "Operator session only; no operator_id."
+    },
+    {
+      "text": "No expected result asserts the exact text of a 422 `message`; at most that it is non-empty.",
+      "passed": true,
+      "evidence": "No exact message asserted."
+    },
+    {
+      "text": "The cases contain no absolute calendar dates, emails, UUIDs, national IDs or serial numbers; times are stated relative to a threshold or to request time.",
+      "passed": true,
+      "evidence": "No dates/emails/UUIDs; catalogue zone codes only where the rule depends on them."
+    },
+    {
+      "text": "Expected results assert only response fields defined in Confluence 01/03 (e.g. state, failing_gate, rule_reference, message, rejection_reason) and no invented ones such as `ok`.",
+      "passed": true,
+      "evidence": "Validate success asserts status only (line 28: `200`.)."
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 143.5,
+    "total_duration_seconds": 143.5
+  }
+}

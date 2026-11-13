@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: duration-focus-06
+expected_outcome: |
+  A design JSON for the Duration rule only: BV triples 14/15/16 and 239/240/241 min with 15 and 240 valid, backed by the 'inclusive at both ends' quote; the strictly-after clause as an invalid class; every quote verbatim from 06; no states or transitions taken from outside 06.

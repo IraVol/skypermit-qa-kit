@@ -1,0 +1,1 @@
+{"file": "API-OP-002-flight-duration-range.md", "cases": 13, "ids": "API-OP-002.1-API-OP-002.13", "rule": "TSD-4 §3 TIME_WINDOW duration 15-240 min", "techniques": "BV(6) EP(4) ST(3)", "open_points": 3}

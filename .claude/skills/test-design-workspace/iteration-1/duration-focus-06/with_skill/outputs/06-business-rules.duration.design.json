@@ -1,0 +1,165 @@
+{
+  "spec": ["specs/06-business-rules.md"],
+  "focus": "Duration",
+  "boundary_values": [
+    {
+      "id": "BV-01",
+      "parameter": "window duration (window_end − window_start)",
+      "boundary": "15 minutes (lower)",
+      "inclusive": true,
+      "step": "1 minute",
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 95, "text": "15–240 minutes, inclusive at both ends."},
+        {"file": "specs/06-business-rules.md", "line": 188, "text": "| `TIME_WINDOW` | Duration out of range | `TSD-4 §3` |"},
+        {"file": "specs/06-business-rules.md", "line": 28, "text": "`failing_gate` in a `422` response always names the *first* gate to fail, never every gate that would fail."},
+        {"file": "specs/06-business-rules.md", "line": 24, "text": "Gates run in a fixed order and evaluation stops at the first failure:"}
+      ],
+      "values": [
+        {"position": "boundary-1", "value": "14 minutes", "expected": "invalid", "outcome": "422, failing_gate = TIME_WINDOW, rule_reference = \"TSD-4 §3\" (provided PILOT, AIRCRAFT and ZONE pass)"},
+        {"position": "boundary", "value": "15 minutes", "expected": "valid", "outcome": null},
+        {"position": "boundary+1", "value": "16 minutes", "expected": "valid", "outcome": null}
+      ]
+    },
+    {
+      "id": "BV-02",
+      "parameter": "window duration (window_end − window_start)",
+      "boundary": "240 minutes (upper)",
+      "inclusive": true,
+      "step": "1 minute",
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 95, "text": "15–240 minutes, inclusive at both ends."},
+        {"file": "specs/06-business-rules.md", "line": 188, "text": "| `TIME_WINDOW` | Duration out of range | `TSD-4 §3` |"},
+        {"file": "specs/06-business-rules.md", "line": 28, "text": "`failing_gate` in a `422` response always names the *first* gate to fail, never every gate that would fail."},
+        {"file": "specs/06-business-rules.md", "line": 24, "text": "Gates run in a fixed order and evaluation stops at the first failure:"}
+      ],
+      "values": [
+        {"position": "boundary-1", "value": "239 minutes", "expected": "valid", "outcome": null},
+        {"position": "boundary", "value": "240 minutes", "expected": "valid", "outcome": null},
+        {"position": "boundary+1", "value": "241 minutes", "expected": "invalid", "outcome": "422, failing_gate = TIME_WINDOW, rule_reference = \"TSD-4 §3\" (provided PILOT, AIRCRAFT and ZONE pass)"}
+      ]
+    },
+    {
+      "id": "BV-03",
+      "parameter": "window_end relative to window_start",
+      "boundary": "window_end = window_start (exclusive — window_end must be strictly after)",
+      "inclusive": false,
+      "step": "1 minute",
+      "note": "Every value on this triple is also below the 15-minute minimum (BV-01), so boundary+1 is still invalid — by the duration range, not by the strictly-after clause.",
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 95, "text": "`window_end` strictly after `window_start`."},
+        {"file": "specs/06-business-rules.md", "line": 95, "text": "15–240 minutes, inclusive at both ends."}
+      ],
+      "values": [
+        {"position": "boundary-1", "value": "window_end = window_start − 1 minute", "expected": "invalid", "outcome": null, "unknown": "U-02"},
+        {"position": "boundary", "value": "window_end = window_start (0 minutes)", "expected": "invalid", "outcome": null, "unknown": "U-02"},
+        {"position": "boundary+1", "value": "window_end = window_start + 1 minute", "expected": "invalid", "outcome": "422, failing_gate = TIME_WINDOW, rule_reference = \"TSD-4 §3\" (1 minute is below the 15-minute minimum; provided PILOT, AIRCRAFT and ZONE pass)",
+          "quotes": [{"file": "specs/06-business-rules.md", "line": 188, "text": "| `TIME_WINDOW` | Duration out of range | `TSD-4 §3` |"}]}
+      ]
+    }
+  ],
+  "equivalence_classes": [
+    {
+      "id": "EP-01",
+      "parameter": "window duration",
+      "class": "15–240 minutes (in range, window_end after window_start)",
+      "valid": true,
+      "representative": "120 minutes",
+      "outcome": null,
+      "quotes": [{"file": "specs/06-business-rules.md", "line": 95, "text": "15–240 minutes, inclusive at both ends."}]
+    },
+    {
+      "id": "EP-02",
+      "parameter": "window duration",
+      "class": "below range: window_end after window_start, duration < 15 minutes",
+      "valid": false,
+      "representative": "7 minutes",
+      "outcome": "422, failing_gate = TIME_WINDOW, rule_reference = \"TSD-4 §3\" (provided PILOT, AIRCRAFT and ZONE pass)",
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 95, "text": "15–240 minutes, inclusive at both ends."},
+        {"file": "specs/06-business-rules.md", "line": 188, "text": "| `TIME_WINDOW` | Duration out of range | `TSD-4 §3` |"},
+        {"file": "specs/06-business-rules.md", "line": 28, "text": "`failing_gate` in a `422` response always names the *first* gate to fail, never every gate that would fail."}
+      ]
+    },
+    {
+      "id": "EP-03",
+      "parameter": "window duration",
+      "class": "above range: duration > 240 minutes",
+      "valid": false,
+      "representative": "360 minutes",
+      "outcome": "422, failing_gate = TIME_WINDOW, rule_reference = \"TSD-4 §3\" (provided PILOT, AIRCRAFT and ZONE pass)",
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 95, "text": "15–240 minutes, inclusive at both ends."},
+        {"file": "specs/06-business-rules.md", "line": 188, "text": "| `TIME_WINDOW` | Duration out of range | `TSD-4 §3` |"},
+        {"file": "specs/06-business-rules.md", "line": 28, "text": "`failing_gate` in a `422` response always names the *first* gate to fail, never every gate that would fail."}
+      ]
+    },
+    {
+      "id": "EP-04",
+      "parameter": "window_end relative to window_start",
+      "class": "window_end not strictly after window_start (equal to or before it)",
+      "valid": false,
+      "representative": "window_end = window_start − 60 minutes",
+      "outcome": null,
+      "unknown": "U-02",
+      "quotes": [{"file": "specs/06-business-rules.md", "line": 95, "text": "`window_end` strictly after `window_start`."}]
+    }
+  ],
+  "state_transitions": {
+    "not_applicable": "The Duration condition (TSD-4 §3) defines no states or transitions; specs/06-business-rules.md never says which action evaluates it or which state a failing request ends in (see U-05)."
+  },
+  "unknowns": [
+    {
+      "id": "U-01",
+      "kind": "gap",
+      "question": "What is the time granularity of window_start/window_end for the duration check — can they carry seconds, and how is a fractional duration such as 14 min 59 s or 240 min 30 s judged?",
+      "why_it_matters": "BV-01/BV-02 use a 1-minute step taken from the unit the range is written in. The only granularity statement in the file is the curfew's minute-by-minute evaluation, which is not about duration. If sub-minute values are accepted, the real boundary neighbours are 14:59 and 240:01, not 14 and 241 minutes.",
+      "affects": ["BV-01", "BV-02", "BV-03"],
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 95, "text": "15–240 minutes, inclusive at both ends."},
+        {"file": "specs/06-business-rules.md", "line": 96, "text": "Evaluated minute-by-minute across the whole window, not just the endpoints."}
+      ]
+    },
+    {
+      "id": "U-02",
+      "kind": "gap",
+      "question": "What does the system return when window_end is equal to or before window_start — the TIME_WINDOW 422 with \"TSD-4 §3\" (the only duration row in the rule_reference table is \"Duration out of range\"), or an earlier rejection of the request as malformed when it is created/updated?",
+      "why_it_matters": "The strictly-after clause is stated, but no outcome is attached to it specifically; BV-03 (boundary-1, boundary) and EP-04 can only assert \"invalid\", not the status code or body.",
+      "affects": ["BV-03", "EP-04"],
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 95, "text": "`window_end` strictly after `window_start`."},
+        {"file": "specs/06-business-rules.md", "line": 188, "text": "| `TIME_WINDOW` | Duration out of range | `TSD-4 §3` |"}
+      ]
+    },
+    {
+      "id": "U-03",
+      "kind": "gap",
+      "question": "How are malformed window values handled — window_start or window_end missing, null, unparseable, or given without a time zone?",
+      "why_it_matters": "These are inputs; the file defines only the range and the strictly-after rule, so no class or outcome for malformed values can be designed.",
+      "affects": ["EP-01", "EP-02", "EP-03", "EP-04"],
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 99, "text": "`window_start`/`window_end` are stored and compared in UTC."}
+      ]
+    },
+    {
+      "id": "U-04",
+      "kind": "gap",
+      "question": "In what order are the conditions inside TIME_WINDOW evaluated (lead time, advance booking, duration, curfew, overlap) — if a window violates duration and another TIME_WINDOW condition, which rule_reference is returned?",
+      "why_it_matters": "The file fixes the order only across gates. Every invalid duration value must therefore be tested with all other TIME_WINDOW conditions satisfied (lead time ≥ 6 h, ≤ 60 days ahead, no curfew, no overlap) — a 241+ minute window in a curfew zone can easily hit the curfew too — otherwise the expected \"TSD-4 §3\" is not guaranteed.",
+      "affects": ["BV-01", "BV-02", "BV-03", "EP-02", "EP-03"],
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 24, "text": "Gates run in a fixed order and evaluation stops at the first failure:"},
+        {"file": "specs/06-business-rules.md", "line": 26, "text": "**`PILOT` → `AIRCRAFT` → `ZONE` → `TIME_WINDOW`**"}
+      ]
+    },
+    {
+      "id": "U-05",
+      "kind": "gap",
+      "question": "Which action/endpoint runs the gate pipeline (and so the duration check), and what state does a request end in when it fails duration?",
+      "why_it_matters": "The file gives the 422 body fields but no endpoint, no request state and no transition, so a test can't be anchored to a call or a resulting state from this file alone; it is also why state transitions are not applicable here.",
+      "affects": ["BV-01", "BV-02", "BV-03", "EP-02", "EP-03", "EP-04"],
+      "quotes": [
+        {"file": "specs/06-business-rules.md", "line": 176, "text": "Ready to hardcode into gate responses."}
+      ]
+    }
+  ]
+}
